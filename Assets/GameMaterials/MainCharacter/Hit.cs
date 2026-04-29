@@ -3,18 +3,21 @@ using UnityEngine;
 public class Hitbox : MonoBehaviour
 {
     public int hasar = 10;
-
+    public PlayerController playerController;
     private void OnTriggerEnter(Collider other)
     {
-        Enemy enemy = other.GetComponent<Enemy>();
-        if (enemy == null)
-        {
-            enemy = other.GetComponentInParent<Enemy>();
-        }
+
+        Enemy enemy = other.GetComponent<Enemy>() ?? other.GetComponentInParent<Enemy>();
 
         if (enemy != null)
         {
-            enemy.HasarAl(hasar);
+            if (playerController.isAttack)
+            {
+                enemy.HasarAl(hasar);
+                playerController.isAttack = false;
+            }
+                
+            
         }
     }
 }

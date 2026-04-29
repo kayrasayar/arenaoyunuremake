@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     [Header("Kamera Ayarları")]
     public Transform cameraPivot;
     public float mouseHassasiyet = 2f;
+    public bool isAttack = false;
 
     private float yVelocity;
     private bool kosuyorMu;
@@ -47,12 +48,18 @@ public class PlayerController : MonoBehaviour
 
     public void OnAttack(InputValue value)
     {
-        if (value.isPressed)
+        if (value.isPressed && !isAttack)
         {
             animator?.SetTrigger("Attack");
+            // Animasyonun tam vuruş anına gelmesi için 0.3 saniye bekle ve hasarı aç
+            Invoke("HitboxAc", 0.3f);
+            // 0.5 saniye sonra (vuruş bitince) hasarı geri kapat
+            Invoke("HitboxKapat", 0.5f);
         }
     }
 
+    void HitboxAc() => isAttack = true;
+    void HitboxKapat() => isAttack = false;
     void Update()
     {
         // 🔥 SHIFT kontrolünü direkt buradan alıyoruz (bug yok)
