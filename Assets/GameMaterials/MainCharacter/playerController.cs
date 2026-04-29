@@ -1,5 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI; // ✅ EKLENDİ
+using UnityEngine.SceneManagement; // ✅ EKLENDİ
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -16,6 +19,11 @@ public class PlayerController : MonoBehaviour
     public float yercekimi = -20f;
     public float ziplaGucu = 1.5f;
 
+    [Header("Can Ayarları")]
+    public int maxCan = 100;
+    private int mevcutCan; // ✅ EKLENDİ
+    public Image canBarıGorseli; // ✅ EKLENDİ
+
     [Header("Kamera Ayarları")]
     public Transform cameraPivot;
     public float mouseHassasiyet = 2f;
@@ -23,11 +31,18 @@ public class PlayerController : MonoBehaviour
 
     private float yVelocity;
     private bool kosuyorMu;
+    public bool Die = false;
+    public bool isDead = false;
+    public bool isDefending = false;
+    public float defansSure = 1.5f;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
+        mevcutCan = maxCan; // ✅ EKLENDİ
+        CanBarıGuncelle(); // ✅ EKLENDİ
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -46,38 +61,103 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // ✅ DÜZELTİLDİ
+    public void HasarAl(int hasarMiktari)
+    {
+        if (isDead)
+            return;
+
+        if (isDefending)
+        {
+            Debug.Log("Player defans yaptı, hasar engellendi.");
+            return;
+        }
+
+        mevcutCan -= hasarMiktari;
+
+        Debug.Log("Player hasar aldı: " + hasarMiktari);
+
+        CanBarıGuncelle();
+
+        if (mevcutCan <= 0)
+        {
+            isDead = true;
+            Die = true;
+            if (animator != null)
+            {
+                animator.SetBool("Die", true);
+            }
+            StartCoroutine(OyuncuOlmeCoroutine());
+        }
+    }
+
+    public void OnDefense(InputValue value)
+    {
+        if (value.isPressed && !isDefending && !isDead)
+        {
+            isDefending = true;
+            animator?.SetTrigger("Def");
+            Invoke(nameof(DefansKapat), defansSure);
+        }
+    }
+
+    void DefansKapat() => isDefending = false;
+
+    // ✅ EKLENDİ
+    void CanBarıGuncelle()
+    {
+        if (canBarıGorseli != null)
+        {
+            canBarıGorseli.fillAmount = (float)mevcutCan / maxCan;
+        }
+    }
+
     public void OnAttack(InputValue value)
     {
+        if (isDead) return;
+
         if (value.isPressed && !isAttack)
         {
             animator?.SetTrigger("Attack");
-            // Animasyonun tam vuruş anına gelmesi için 0.3 saniye bekle ve hasarı aç
             Invoke("HitboxAc", 0.3f);
-            // 0.5 saniye sonra (vuruş bitince) hasarı geri kapat
             Invoke("HitboxKapat", 0.5f);
         }
     }
 
     void HitboxAc() => isAttack = true;
     void HitboxKapat() => isAttack = false;
+
     void Update()
     {
-        // 🔥 SHIFT kontrolünü direkt buradan alıyoruz (bug yok)
+        if (isDead) return;
+
         kosuyorMu = Keyboard.current.leftShiftKey.isPressed;
+
+        if (!isDefending && Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            StartDefense();
+        }
 
         Hareket();
         KameraKontrol();
         Animasyon();
     }
 
+    void StartDefense()
+    {
+        if (isDefending || isDead) return;
+
+        isDefending = true;
+        animator?.SetTrigger("Def");
+        Invoke(nameof(DefansKapat), defansSure);
+    }
+
     void KameraKontrol()
     {
         float mouseX = lookInput.x * mouseHassasiyet;
 
-        // sadece sağ-sol dön
         transform.Rotate(Vector3.up * mouseX);
 
-        // kamera sabit
         if (cameraPivot != null)
         {
             cameraPivot.localRotation = Quaternion.Euler(0f, 0f, 0f);
@@ -100,6 +180,7 @@ public class PlayerController : MonoBehaviour
 
         controller.Move(finalMove * Time.deltaTime);
     }
+
     void Animasyon()
     {
         if (animator == null) return;
@@ -116,5 +197,16 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Speed", finalSpeed, 0.1f, Time.deltaTime);
         animator.SetBool("Walk", finalSpeed > 0f);
         animator.SetBool("Run", kosuyorMu && rawSpeed > 0.1f);
+    }
+
+    IEnumerator OyuncuOlmeCoroutine()
+    {
+        Debug.Log("Oyuncu öldü!");
+        if (controller != null)
+        {
+            controller.enabled = false;
+        }
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("losescreen");
     }
 }

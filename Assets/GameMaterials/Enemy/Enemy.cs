@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI; // UI işlemleri için gerekli
+using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
@@ -8,26 +8,59 @@ public class Enemy : MonoBehaviour
 {
     private NavMeshAgent agent;
     private Animator animator;
+    private PlayerController hedefPlayer;
+    public bool Die = false;
+    private bool isDead = false;
+    public float olmeBekleme = 5f;
 
     public Transform hedef;
-    
+
     [Header("Can Ayarları")]
     public int maxCan = 100;
     private int mevcutCan;
-    public Image canBarıGorseli; // Inspector'da "currentHealth" objesini buraya sürükle
+    public Image canBarıGorseli;
 
     private GameObject efektObjesi;
+
+    [Header("Saldırı Ayarları")]
+    public float saldiriMesafesi = 2f;
+    public int hasar = 10;
+    public float saldiriCooldown = 1.5f;
+
+    private float sonrakiSaldiriZamani = 0f;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        
-        // Oyun başında canı fulle
+
+        if (hedef == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null)
+            {
+                hedef = playerObj.transform;
+            }
+        }
+
+        if (hedef != null)
+        {
+            hedefPlayer = hedef.GetComponentInParent<PlayerController>();
+            if (hedefPlayer == null)
+            {
+                hedefPlayer = hedef.GetComponent<PlayerController>();
+            }
+
+            if (hedefPlayer == null)
+            {
+                Debug.LogWarning("Enemy hedefinde PlayerController bulunamadı: " + hedef.name);
+            }
+        }
+
         mevcutCan = maxCan;
         UpdateCanBarı();
 
-        // "efekt" taglı objeyi bulma
+        // efekt objesi bul
         foreach (Transform child in transform)
         {
             if (child.CompareTag("efekt"))
@@ -41,9 +74,21 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (hedef != null)
+        if (hedef == null || isDead) return;
+
+        float mesafe = Vector3.Distance(transform.position, hedef.position);
+
+        if (mesafe <= saldiriMesafesi)
         {
-            agent.SetDestination(hedef.position);
+            Saldir();
+        }
+        else
+        {
+            if (agent != null)
+            {
+                agent.isStopped = false;
+                agent.SetDestination(hedef.position);
+            }
         }
 
         AnimasyonKontrol();
@@ -65,33 +110,82 @@ public class Enemy : MonoBehaviour
         animator.SetBool("Run", kosuyorMu);
     }
 
+    void Saldir()
+    {
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.SetDestination(transform.position);
+        }
+
+        // player'a dön
+        Vector3 yon = (hedef.position - transform.position).normalized;
+        yon.y = 0;
+        transform.forward = yon;
+
+        if (Time.time >= sonrakiSaldiriZamani)
+        {
+            sonrakiSaldiriZamani = Time.time + saldiriCooldown;
+
+            Debug.Log("Enemy vurdu!");
+
+            // animasyon
+            if (animator != null)
+            {
+                animator.SetTrigger("Attack");
+            }
+
+            if (hedefPlayer == null && hedef != null)
+            {
+                hedefPlayer = hedef.GetComponentInParent<PlayerController>();
+                if (hedefPlayer == null)
+                {
+                    hedefPlayer = hedef.GetComponent<PlayerController>();
+                }
+            }
+
+            if (hedefPlayer != null)
+            {
+                hedefPlayer.HasarAl(hasar);
+            }
+            else
+            {
+                Debug.LogWarning("Enemy saldırdı ama player component bulunamadı: " + (hedef != null ? hedef.name : "null"));
+            }
+        }
+    }
+
     public void HasarAl(int miktar)
     {
+        if (isDead) return;
+
         mevcutCan -= miktar;
         Debug.Log("Enemy hasar aldı: " + miktar);
-        
-        // Can barını görsel olarak güncelle
+
         UpdateCanBarı();
 
         if (efektObjesi != null)
         {
-            // Önceki çalışan coroutine varsa durdur (üst üste binmesin)
-            StopAllCoroutines(); 
+            StopAllCoroutines();
             StartCoroutine(EfektiGoster());
         }
-        
+
         if (mevcutCan <= 0)
         {
-            Ol();
+            isDead = true;
+            Die = true;
+            if (animator != null)
+            {
+                animator.SetBool("Die", true);
+            }
+            StartCoroutine(OlCoroutine());
         }
     }
 
-    // Can barının fillAmount değerini değiştiren yardımcı fonksiyon
     void UpdateCanBarı()
     {
         if (canBarıGorseli != null)
         {
-            // float bölmesi yaparak 0 ile 1 arasında değer veriyoruz
             canBarıGorseli.fillAmount = (float)mevcutCan / maxCan;
         }
     }
@@ -103,10 +197,15 @@ public class Enemy : MonoBehaviour
         if (efektObjesi != null) efektObjesi.SetActive(false);
     }
 
-    void Ol()
+    IEnumerator OlCoroutine()
     {
         Debug.Log("Enemy öldü");
-        Destroy(gameObject, 0.2f);
+        if (agent != null)
+        {
+            agent.isStopped = true;
+        }
+        yield return new WaitForSeconds(olmeBekleme);
         SceneManager.LoadScene("winscreen");
+        Destroy(gameObject);
     }
 }
