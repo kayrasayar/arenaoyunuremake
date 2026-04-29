@@ -194,9 +194,15 @@ MonoBehaviour:
   kosmaCarpani: 2
   yercekimi: -20
   ziplaGucu: 1.5
+  maxCan: 100
+  "canBar\u0131Gorseli": {fileID: 328056718}
   cameraPivot: {fileID: 1947600628}
   mouseHassasiyet: 0.15
   isAttack: 0
+  Die: 0
+  isDead: 0
+  isDefending: 0
+  defansSure: 1.5
 --- !u!114 &5312767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,8 +349,8 @@ Transform:
   m_GameObject: {fileID: 88522488}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.13326073, y: 1.5389997, z: 0.13488007}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.13326073, y: 1.4, z: 0.141}
+  m_LocalScale: {x: 0.8405397, y: 0.62877, z: 0.834252}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5312765}
@@ -373,14 +379,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 138799466}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.41, y: 2.1, z: -2.11}
+  m_LocalRotation: {x: 0.061571185, y: 0, z: 0, w: 0.9981027}
+  m_LocalPosition: {x: 0.34, y: 2.12, z: -2.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1947600628}
   m_Father: {fileID: 5312765}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 7.06, y: 0, z: 0}
 --- !u!4 &191124549 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8d372a6bbd61a4e84ac2756c51bfd155,
@@ -1742,7 +1748,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.06978583, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.07058824, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2339,7 +2345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9056604, g: 0.10679956, b: 0.10679956, a: 1}
+  m_Color: {r: 0.14901961, g: 0.16470589, b: 0.19215687, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2586,9 +2592,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16b66119de31b4aaa8c8994126f4d81b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  hedef: {fileID: 88522489}
+  Die: 0
+  olmeBekleme: 5
+  hedef: {fileID: 5312765}
   maxCan: 100
   "canBar\u0131Gorseli": {fileID: 2109199799}
+  saldiriMesafesi: 2
+  hasar: 10
+  saldiriCooldown: 1.5
 --- !u!195 &1531206632
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2652,7 +2663,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.29137143
+  m_Radius: 0.38
   m_Height: 1.7500002
   m_Direction: 1
   m_Center: {x: 0, y: 0.83, z: 0.0913714}
