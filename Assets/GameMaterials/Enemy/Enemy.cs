@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI; // UI işlemleri için gerekli
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
@@ -106,5 +107,6 @@ public class Enemy : MonoBehaviour
     {
         Debug.Log("Enemy öldü");
         Destroy(gameObject, 0.2f);
+        SceneManager.LoadScene("winscreen");
     }
 }
