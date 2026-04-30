@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Can Ayarları")]
     public int maxCan = 100;
-    private int mevcutCan; // ✅ EKLENDİ
+    public int mevcutCan; // ✅ EKLENDİ
     public Image canBarıGorseli; // ✅ EKLENDİ
 
     [Header("Kamera Ayarları")]
