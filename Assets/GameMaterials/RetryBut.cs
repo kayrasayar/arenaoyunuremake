@@ -14,7 +14,7 @@ public class RetryBut : MonoBehaviour
     public void clicked()
     {
         
-        SceneManager.LoadScene("arena");
+        SceneManager.LoadScene("worldscreen");
     }
 
 }

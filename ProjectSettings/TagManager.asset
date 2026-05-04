@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - efekt
+  - XPText
+  - XPBar
+  - LevelText
   layers:
   - Default
   - TransparentFX

@@ -60,6 +60,16 @@ public class Enemy : MonoBehaviour
         mevcutCan = maxCan;
         UpdateCanBarı();
 
+        // İlerleme sistemine göre düşman güçlendirme
+        if (GameProgressManager.Instance != null)
+        {
+            maxCan = Mathf.RoundToInt(maxCan * GameProgressManager.Instance.enemyHealthMultiplier);
+            hasar = Mathf.RoundToInt(hasar * GameProgressManager.Instance.enemyDamageMultiplier);
+            agent.speed *= GameProgressManager.Instance.enemySpeedMultiplier;
+        }
+
+        mevcutCan = maxCan;
+
         // efekt objesi bul
         foreach (Transform child in transform)
         {
@@ -205,6 +215,15 @@ public class Enemy : MonoBehaviour
             agent.isStopped = true;
         }
         yield return new WaitForSeconds(olmeBekleme);
-        SceneManager.LoadScene("winscreen");
+
+        // Kazanma: XP kazanma
+        if (GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.WinGame();
+        }
+        else
+        {
+            SceneManager.LoadScene("winscreen");
+        }
     }
 }

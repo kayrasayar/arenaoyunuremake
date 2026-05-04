@@ -87,7 +87,15 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("Die", true);
             }
-            StartCoroutine(OyuncuOlmeCoroutine());
+            // Kaybetme: XP kaybı
+            if (GameProgressManager.Instance != null)
+            {
+                GameProgressManager.Instance.LoseGame();
+            }
+            else
+            {
+                StartCoroutine(OyuncuOlmeCoroutine());
+            }
         }
     }
 
