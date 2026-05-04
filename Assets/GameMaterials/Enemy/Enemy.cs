@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Saldırı Ayarları")]
     public float saldiriMesafesi = 2f;
-    public int hasar = 10;
+    public int hasar = 11;
     public float saldiriCooldown = 1.5f;
 
     private float sonrakiSaldiriZamani = 0f;
