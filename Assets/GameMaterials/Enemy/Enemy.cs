@@ -206,6 +206,5 @@ public class Enemy : MonoBehaviour
         }
         yield return new WaitForSeconds(olmeBekleme);
         SceneManager.LoadScene("winscreen");
-        Destroy(gameObject);
     }
 }

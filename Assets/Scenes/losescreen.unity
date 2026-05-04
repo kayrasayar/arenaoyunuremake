@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Yeni Oyun
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -292,8 +292,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -8.15, y: -132.32}
-  m_SizeDelta: {x: 100, y: 40}
+  m_AnchoredPosition: {x: -22.8839, y: -221.8273}
+  m_SizeDelta: {x: 255.2821, y: 86.6863}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &657540683
 MonoBehaviour:
@@ -664,8 +664,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 111, y: -75}
-  m_SizeDelta: {x: 825.8724, y: 310.4486}
+  m_AnchoredPosition: {x: 142.6958, y: -157.93622}
+  m_SizeDelta: {x: 1298.648, y: 566.7113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &986622187
 MonoBehaviour:
@@ -988,8 +988,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.7, y: 0.0025024}
-  m_SizeDelta: {x: 877.9, y: 427.51}
+  m_AnchoredPosition: {x: -22.8839, y: -21.0222}
+  m_SizeDelta: {x: 1380.459, y: 780.4022}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1891582520
 MonoBehaviour:
