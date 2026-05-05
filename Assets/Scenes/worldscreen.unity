@@ -153,7 +153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 770.4, y: -403.7}
+  m_AnchoredPosition: {x: 772.8, y: -460.8}
   m_SizeDelta: {x: 356.1, y: 113.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &112576054
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.16037738, g: 0.15962088, b: 0.15962088, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -231,8 +231,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -875.72, y: -456.79}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: -839.7, y: -505.5}
+  m_SizeDelta: {x: 239.3, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &188885074
 MonoBehaviour:
@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -582,7 +582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3529412, g: 0.54509807, b: 0.54901963, a: 1}
+  m_Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -623,7 +623,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 697.4, y: -419.8}
+  m_AnchoredPosition: {x: 694.6, y: -482.4}
   m_SizeDelta: {x: 190.3, y: 51.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &890667612
@@ -660,7 +660,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 932.7, y: -382.4}
+  m_AnchoredPosition: {x: 932.7, y: -438.8}
   m_SizeDelta: {x: 668.65, y: 65.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &890667614
@@ -692,8 +692,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294901869
-  m_fontColor: {r: 0.42711794, g: 0, b: 1, a: 1}
+    rgba: 4294954723
+  m_fontColor: {r: 0.88927126, g: 0.8066038, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -882,7 +882,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 140.8, y: -38.2, z: 71}
-  m_LocalScale: {x: 6.81, y: 3.47, z: 2.01}
+  m_LocalScale: {x: 2.38, y: 2.71, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1284,7 +1284,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 874, y: -429.08}
+  m_AnchoredPosition: {x: 871.6, y: -490.8}
   m_SizeDelta: {x: 135.7, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1444678383
@@ -1310,7 +1310,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 8b29aaa3eec7468097ff07adfcf29ac9, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 9ad269c99dcf42b7aedefd83dd5a7b9d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1631,8 +1631,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameProgressManager
   currentXP: 0
-  xpForWin: 20
-  xpForLose: -10
+  xpForWin: 100
+  xpForLose: -100
   maxXP: 1000
   currentLevel: 1
   maxLevel: 10
@@ -1704,8 +1704,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4.649994, y: 0}
-  m_SizeDelta: {x: -9.300013, y: 0}
+  m_AnchoredPosition: {x: -2.0999756, y: 0}
+  m_SizeDelta: {x: 4.1999903, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2095149876
 MonoBehaviour:
@@ -1754,8 +1754,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 33.49
+  m_fontSizeBase: 33.49
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

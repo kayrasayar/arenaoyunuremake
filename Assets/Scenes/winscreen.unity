@@ -394,8 +394,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 136.52863, y: 66.171616}
-  m_SizeDelta: {x: 862.67, y: 307.1838}
+  m_AnchoredPosition: {x: 161.8, y: 173.2}
+  m_SizeDelta: {x: 1108.4, y: 307.1838}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &986622187
 MonoBehaviour:
@@ -417,7 +417,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'KAZANDINIZ
+  m_text: 'KAZANDIN
 
 '
   m_isRightToLeft: 0
@@ -446,8 +446,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 111.3
-  m_fontSizeBase: 111.3
+  m_fontSize: 145.04
+  m_fontSizeBase: 145.04
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -535,8 +535,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 58.8594, y: 16.1932}
-  m_SizeDelta: {x: 277.7189, y: 62.3865}
+  m_AnchoredPosition: {x: -18.9, y: 16.1932}
+  m_SizeDelta: {x: 292.6, y: 103.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1030603789
 MonoBehaviour:
@@ -903,8 +903,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.02
-  m_fontSizeBase: 28.02
+  m_fontSize: 45.9
+  m_fontSizeBase: 45.9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -990,8 +990,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -32.034607, y: -21.446808}
-  m_SizeDelta: {x: 1393.0479, y: 714.6663}
+  m_AnchoredPosition: {x: 236.33081, y: -118.30914}
+  m_SizeDelta: {x: 2558.306, y: 1236.3264}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1891582520
 MonoBehaviour:

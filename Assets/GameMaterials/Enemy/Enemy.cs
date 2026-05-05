@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
     private PlayerController hedefPlayer;
     public bool Die = false;
     private bool isDead = false;
-    public float olmeBekleme = 5f;
+    public float olmeBekleme = 4f;
 
     public Transform hedef;
 

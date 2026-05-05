@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour
     public int maxCan = 100;
     public int mevcutCan; // ✅ EKLENDİ
     public Image canBarıGorseli; // ✅ EKLENDİ
+    
+    [Header("Hasar Ayarları")]
+    public int baseHasar = 10; // ✅ EKLENDİ
 
     [Header("Kamera Ayarları")]
     public Transform cameraPivot;
@@ -35,6 +38,8 @@ public class PlayerController : MonoBehaviour
     public bool isDead = false;
     public bool isDefending = false;
     public float defansSure = 1.5f;
+    
+    private int baseMaxCan = 100; // ✅ EKLENDİ
 
     void Start()
     {
@@ -43,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
         mevcutCan = maxCan; // ✅ EKLENDİ
         CanBarıGuncelle(); // ✅ EKLENDİ
+        ApplyLevelStats(); // ✅ EKLENDİ
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -87,15 +93,8 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("Die", true);
             }
-            // Kaybetme: XP kaybı
-            if (GameProgressManager.Instance != null)
-            {
-                GameProgressManager.Instance.LoseGame();
-            }
-            else
-            {
-                StartCoroutine(OyuncuOlmeCoroutine());
-            }
+            // Kaybetme: 4 saniye ölüm animasyonu, sonra XP kaybı
+            StartCoroutine(OyuncuOlmeCoroutine());
         }
     }
 
@@ -207,6 +206,30 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Run", kosuyorMu && rawSpeed > 0.1f);
     }
 
+    // ✅ EKLENDİ: Seviyeye göre karakteri güçlendir
+    public void ApplyLevelStats()
+    {
+        if (GameProgressManager.Instance == null) return;
+
+        int level = GameProgressManager.Instance.currentLevel;
+        float levelMultiplier = (float)level / GameProgressManager.Instance.maxLevel;
+
+        // Karakterin boyutunu artır (1x - 2x)
+        float scaleMultiplier = 1.0f + levelMultiplier * 1.0f;
+        transform.localScale = Vector3.one * scaleMultiplier;
+
+        // Hasar artır (10 - 25)
+        baseHasar = Mathf.RoundToInt(10 + levelMultiplier * 15f);
+
+        // Can artır (100 - 300)
+        baseMaxCan = Mathf.RoundToInt(100 + levelMultiplier * 200f);
+        maxCan = baseMaxCan;
+        mevcutCan = maxCan;
+        CanBarıGuncelle();
+
+        Debug.Log("Player güçlendirildi - Seviye: " + level + " | Scale: " + scaleMultiplier + " | Hasar: " + baseHasar + " | Max Can: " + maxCan);
+    }
+
     IEnumerator OyuncuOlmeCoroutine()
     {
         Debug.Log("Oyuncu öldü!");
@@ -214,7 +237,14 @@ public class PlayerController : MonoBehaviour
         {
             controller.enabled = false;
         }
-        yield return new WaitForSeconds(5f);
-        SceneManager.LoadScene("losescreen");
+        yield return new WaitForSeconds(4f);
+        if (GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.LoseGame();
+        }
+        else
+        {
+            SceneManager.LoadScene("losescreen");
+        }
     }
 }

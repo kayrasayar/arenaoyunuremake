@@ -190,15 +190,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7e162a78353b41f0a6a6788b5722493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  hiz: 5
-  kosmaCarpani: 2
+  hiz: 3
+  kosmaCarpani: 2.2
   yercekimi: -20
   ziplaGucu: 1.5
   maxCan: 100
   mevcutCan: 0
   "canBar\u0131Gorseli": {fileID: 328056718}
   cameraPivot: {fileID: 1947600628}
-  mouseHassasiyet: 0.15
+  mouseHassasiyet: 0.2
   isAttack: 1
   Die: 0
   isDead: 0
@@ -2264,7 +2264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 1.55
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -2481,7 +2481,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 1.55
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -2666,7 +2666,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -170.9, y: -12.600006}
+  m_AnchoredPosition: {x: -170.90002, y: -12.599976}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1015844856
@@ -8637,7 +8637,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -14.099976, y: -12.6}
+  m_AnchoredPosition: {x: -14.099976, y: -12.599976}
   m_SizeDelta: {x: 307.09998, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1995763885
@@ -8858,7 +8858,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -14.099976, y: -12.6}
+  m_AnchoredPosition: {x: -14.099976, y: -12.599976}
   m_SizeDelta: {x: 322.5, y: 86.70001}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2109199799
