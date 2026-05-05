@@ -1024,10 +1024,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapCubeSpawner
   cubePrefab: {fileID: 1291608721}
-  cubeCount: 3
-  spawnRadius: 200
-  minY: -3
-  maxY: -20
+  cubeCount: 8
+  cubePositions:
+  - {x: -40, y: 2, z: -40}
+  - {x: 40, y: 2, z: -40}
+  - {x: -40, y: 2, z: 40}
+  - {x: 40, y: 2, z: 40}
+  - {x: 0, y: 2, z: -30}
+  - {x: 0, y: 2, z: 30}
+  - {x: -30, y: 2, z: 0}
+  - {x: 30, y: 2, z: 0}
+  cubeScale: 2
+  cubeNames:
+  - "K\xF6pr\xFCba\u015F\u0131"
+  - Akhisar
+  - Demirci
+  - Esenler
+  - "Beylikd\xFCz\xFC"
+  - "\xDCsk\xFCdar"
+  - "\xC7\u0131kr\u0131k\xE7\u0131"
+  - Turgutlu
+  labelHeight: 2.5
+  labelFontSize: 40
+  labelScale: 1.2
+  labelColor: {r: 1, g: 1, b: 1, a: 1}
+  labelFont: {fileID: 0}
   minX: -166
   maxX: 140
   minZ: -60

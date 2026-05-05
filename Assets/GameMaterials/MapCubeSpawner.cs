@@ -19,7 +19,7 @@ public class MapCubeSpawner : MonoBehaviour
         new Vector3(30f, 2f, 0f)
     };
     public float cubeScale = 2f;
-    public string[] cubeNames = { "Köprübaşı", "Turgutlu", "Akhisar", "Bor" };
+    public string[] cubeNames = { "Köprübaşı", "Akhisar", "Demirci", "Esenler", "Beylikdüzü", "Üsküdar", "Çıkrıkçı", "Turgutlu" };
     public float labelHeight = 2.5f;
     public float labelFontSize = 40f;
     public float labelScale = 1.2f;
@@ -39,8 +39,18 @@ public class MapCubeSpawner : MonoBehaviour
 
     void SpawnCubes()
     {
+        if (cubePrefab == null)
+        {
+            Debug.LogError("cubePrefab atanmamış! Inspector'dan küp prefab'ını ata.");
+            return;
+        }
+
         var availableNames = new System.Collections.Generic.List<string>(cubeNames);
+        Debug.Log(cubePositions.Length);
+        Debug.Log(cubeCount);
         int spawnCount = Mathf.Min(cubeCount, cubePositions.Length);
+
+        Debug.Log("Spawn işlemi başlıyor: " + spawnCount + " küp oluşturulacak");
 
         for (int i = 0; i < spawnCount; i++)
         {
@@ -52,6 +62,7 @@ public class MapCubeSpawner : MonoBehaviour
             string label = GetNextCubeLabel(availableNames, i);
             cube.name = label;
             CreateCubeLabel(cube, label);
+            Debug.Log("Küp oluşturuldu: " + label + " konumda: " + position);
         }
     }
 
