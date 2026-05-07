@@ -340,6 +340,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 188885072}
   m_CullTransparentMesh: 1
+--- !u!1 &207585168
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 207585169}
+  - component: {fileID: 207585170}
+  m_Layer: 0
+  m_Name: talimspawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &207585169
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207585168}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1611.2878, y: 0, z: 278.12268}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 534194557}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &207585170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207585168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e279742ac1a7c4326b711e27055f7ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TalimSpawner
+  cubePrefab: {fileID: 418442983}
+  cubeCount: 8
+  cubePositions:
+  - {x: -40, y: 2, z: -40}
+  - {x: 40, y: 2, z: -40}
+  - {x: -40, y: 2, z: 40}
+  - {x: 40, y: 2, z: 40}
+  - {x: 0, y: 2, z: -30}
+  - {x: 0, y: 2, z: 30}
+  - {x: -30, y: 2, z: 0}
+  - {x: 30, y: 2, z: 0}
+  cubeScale: 2
+  cubeNames:
+  - "K\xF6pr\xFCba\u015F\u0131"
+  - Akhisar
+  - Demirci
+  - Esenler
+  - "Beylikd\xFCz\xFC"
+  - "\xDCsk\xFCdar"
+  - "\xC7\u0131kr\u0131k\xE7\u0131"
+  - Turgutlu
+  labelHeight: 2.5
+  labelFontSize: 40
+  labelScale: 1.2
+  labelColor: {r: 1, g: 1, b: 1, a: 1}
+  labelFont: {fileID: 0}
+  minX: -100
+  maxX: 100
+  minZ: -100
+  maxZ: 100
+  minCubeSpacing: 10
+  trainingPosition: {x: 0, y: 2, z: 80}
+  trainingCubeScale: 4
+  trainingLabel: "Talim Alan\u0131"
+  trainingSceneName: talimalani
 --- !u!1001 &340513200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -516,6 +595,118 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53f2a54b8b60745519318080e12caa70, type: 3}
+--- !u!1 &418442983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 418442987}
+  - component: {fileID: 418442986}
+  - component: {fileID: 418442985}
+  - component: {fileID: 418442984}
+  m_Layer: 0
+  m_Name: talim
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &418442984
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418442983}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &418442985
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418442983}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &418442986
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418442983}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &418442987
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418442983}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -184.8, y: -4.1, z: -66.6}
+  m_LocalScale: {x: 20.67, y: 11.96, z: 21.4}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &534194556
 GameObject:
   m_ObjectHideFlags: 0
@@ -549,6 +740,7 @@ Transform:
   - {fileID: 1170428777}
   - {fileID: 1431576287}
   - {fileID: 1392043162}
+  - {fileID: 207585169}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &786220424
@@ -1005,7 +1197,7 @@ GameObject:
   - component: {fileID: 1392043162}
   - component: {fileID: 1392043161}
   m_Layer: 0
-  m_Name: spawner
+  m_Name: kavgaspawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1674,6 +1866,7 @@ MonoBehaviour:
   enemyHealthMultiplier: 1.36
   enemyDamageMultiplier: 1.48
   enemySpeedMultiplier: 1.21
+  needsTraining: 0
 --- !u!4 &1883506615
 Transform:
   m_ObjectHideFlags: 0
@@ -1850,3 +2043,4 @@ SceneRoots:
   - {fileID: 1883506615}
   - {fileID: 1440143335}
   - {fileID: 534194557}
+  - {fileID: 418442987}

@@ -28,6 +28,9 @@ public class GameProgressManager : MonoBehaviour
     public float enemyDamageMultiplier = 1.0f;
     public float enemySpeedMultiplier = 1.0f;
 
+    [Header("Talim Gereksinimi")]
+    public bool needsTraining = false;
+
     void Awake()
     {
         if (Instance == null)
@@ -91,6 +94,7 @@ public class GameProgressManager : MonoBehaviour
         currentXP += xpForWin;
         currentXP = Mathf.Clamp(currentXP, 0, maxXP);
         UpdateLevel();
+        needsTraining = false;
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();
@@ -102,10 +106,19 @@ public class GameProgressManager : MonoBehaviour
         currentXP += xpForLose;
         currentXP = Mathf.Clamp(currentXP, 0, maxXP);
         UpdateLevel();
+        needsTraining = true;
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();
         SceneManager.LoadScene("losescreen");
+    }
+
+    public void CompleteTraining()
+    {
+        needsTraining = false;
+        SaveProgress();
+        UpdateUI();
+        UpdateEnemyStats();
     }
 
     void UpdateLevel()
@@ -149,6 +162,7 @@ public class GameProgressManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("CurrentXP", currentXP);
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+        PlayerPrefs.SetInt("NeedsTraining", needsTraining ? 1 : 0);
         PlayerPrefs.Save();
     }
 
@@ -156,12 +170,14 @@ public class GameProgressManager : MonoBehaviour
     {
         currentXP = PlayerPrefs.GetInt("CurrentXP", 0);
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        needsTraining = PlayerPrefs.GetInt("NeedsTraining", 0) == 1;
     }
 
     public void ResetProgress()
     {
         currentXP = 0;
         currentLevel = 1;
+        needsTraining = false;
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();

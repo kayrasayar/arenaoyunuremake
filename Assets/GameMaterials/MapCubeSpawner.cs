@@ -57,7 +57,8 @@ public class MapCubeSpawner : MonoBehaviour
             Vector3 position = cubePositions[i];
             GameObject cube = Instantiate(cubePrefab, position, Quaternion.identity);
             cube.transform.localScale = Vector3.one * cubeScale;
-            cube.AddComponent<MapCube>();
+            MapCube mapCube = cube.AddComponent<MapCube>();
+            mapCube.Initialize(false, "arena");
 
             string label = GetNextCubeLabel(availableNames, i);
             cube.name = label;
@@ -81,7 +82,7 @@ public class MapCubeSpawner : MonoBehaviour
         textMesh.enableAutoSizing = true;
         textMesh.fontSizeMin = 20f;
         textMesh.fontSizeMax = 80f;
-        textMesh.enableWordWrapping = false;
+        textMesh.textWrappingMode = TextWrappingModes.NoWrap;
         textMesh.rectTransform.sizeDelta = new Vector2(10f, 3f);
         textMesh.transform.localScale = Vector3.one * labelScale;
 
@@ -111,16 +112,35 @@ public class MapCubeSpawner : MonoBehaviour
 
 public class MapCube : MonoBehaviour
 {
+    private bool isTrainingCube = false;
+    private string sceneName = "arena";
+    private string warningMessage = "Önce talim alanına gitmelisin!";
+
+    public void Initialize(bool trainingCube, string destinationScene = "arena")
+    {
+        isTrainingCube = trainingCube;
+        sceneName = destinationScene;
+    }
+
     private void OnMouseDown()
     {
-        // Küpe tıklandığında oyun başlasın
+        if (GameProgressManager.Instance != null && GameProgressManager.Instance.needsTraining && !isTrainingCube)
+        {
+            Debug.LogWarning(warningMessage);
+            return;
+        }
+
         StartGame();
     }
 
     void StartGame()
     {
-        // Ana oyun sahnesine geç
-        SceneManager.LoadScene("arena"); // Sahne adını değiştir
+        if (isTrainingCube && GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.CompleteTraining();
+        }
+
+        SceneManager.LoadScene(sceneName);
     }
 }
 

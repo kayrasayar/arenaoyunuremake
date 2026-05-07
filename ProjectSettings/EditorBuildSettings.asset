@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/worldscreen.unity
     guid: fc679ca46b9854838acb1f53b6f4931a
+  - enabled: 1
+    path: Assets/Scenes/talimalani.unity
+    guid: afdb81e1895504cef9dc6444881003bb
   m_configObjects: {}
