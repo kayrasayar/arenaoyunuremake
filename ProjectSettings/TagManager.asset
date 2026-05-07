@@ -9,6 +9,7 @@ TagManager:
   - XPText
   - XPBar
   - LevelText
+  - talim
   layers:
   - Default
   - TransparentFX
