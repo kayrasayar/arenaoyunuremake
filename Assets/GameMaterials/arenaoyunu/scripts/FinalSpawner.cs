@@ -5,13 +5,13 @@ public class FinalSpawner : MonoBehaviour
 {
     public GameObject cubePrefab;
     public Vector3 spawnPosition = new Vector3(-200f, 6f, 200f);
-    public float cubeScale = 5f;
+    public float cubeScale = 30f;
     public string finalSceneName = "final";
     public Color cubeColor = Color.white;
 
     void Start()
     {
-        spawnPosition = new Vector3(-200f, 6f, 200f); // Inspectorda eski değeri geçersiz kıl
+        spawnPosition = new Vector3(-100f, 6f, 200f); // Inspectorda eski değeri geçersiz kıl
         Debug.Log("FinalSpawner will spawn at: " + spawnPosition);
         SpawnFinalCube();
     }
@@ -44,12 +44,12 @@ public class FinalSpawner : MonoBehaviour
     {
         GameObject textObj = new GameObject("CubeLabel");
         textObj.transform.SetParent(cube.transform, false);
-        textObj.transform.localPosition = new Vector3(0f, 5f, 0f); // Daha yüksek
+        textObj.transform.localPosition = new Vector3(0f, 2f, 0f); // Daha yüksek
         textObj.transform.localRotation = Quaternion.identity;
 
         TextMesh textMesh = textObj.AddComponent<TextMesh>();
         textMesh.text = label;
-        textMesh.fontSize = 20; // Daha büyük
+        textMesh.fontSize = 10; // Daha büyük
         textMesh.color = Color.white;
         textMesh.anchor = TextAnchor.MiddleCenter;
         textMesh.alignment = TextAlignment.Center;

@@ -5,9 +5,10 @@ public class TalimSpawner : MonoBehaviour
 {
     public GameObject cubePrefab;
     public Vector3 spawnPosition = new Vector3(0f, 2f, 80f);
-    public float cubeScale = 4f;
+    public float cubeScale = 40f;
     public string trainingSceneName = "training_arena";
     public Color cubeColor = Color.white;
+    public string cubeLabelText = "Talim Alanı";
 
     void Start()
     {
@@ -25,29 +26,43 @@ public class TalimSpawner : MonoBehaviour
         else
         {
             cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.position = spawnPosition;
             cube.AddComponent<BoxCollider>();
         }
 
+        cube.name = "TalimCube";
+        cube.transform.position = spawnPosition;
         cube.transform.localScale = Vector3.one * cubeScale;
+
         SetCubeColor(cube, cubeColor);
 
-        MapCube mapCube = cube.AddComponent<MapCube>();
+        MapCube mapCube = cube.GetComponent<MapCube>();
+        if (mapCube == null)
+            mapCube = cube.AddComponent<MapCube>();
+
         mapCube.Initialize(true, trainingSceneName);
 
-        CreateCubeLabel(cube, "Talim Alanı");
+        CreateCubeLabel(cube, cubeLabelText);
     }
 
     void CreateCubeLabel(GameObject cube, string label)
     {
+        Transform existingLabel = cube.transform.Find("CubeLabel");
+        if (existingLabel != null)
+        {
+            TextMesh existingText = existingLabel.GetComponent<TextMesh>();
+            if (existingText != null)
+                existingText.text = label;
+            return;
+        }
+
         GameObject textObj = new GameObject("CubeLabel");
         textObj.transform.SetParent(cube.transform, false);
-        textObj.transform.localPosition = new Vector3(0f, 5f, 0f); // Daha yüksek
+        textObj.transform.localPosition = new Vector3(0f, cubeScale * 0.05f + 3f, 0f);
         textObj.transform.localRotation = Quaternion.identity;
 
         TextMesh textMesh = textObj.AddComponent<TextMesh>();
         textMesh.text = label;
-        textMesh.fontSize = 80; // Daha büyük
+        textMesh.fontSize = 20;
         textMesh.color = Color.white;
         textMesh.anchor = TextAnchor.MiddleCenter;
         textMesh.alignment = TextAlignment.Center;

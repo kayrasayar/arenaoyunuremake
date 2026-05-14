@@ -103,6 +103,12 @@ public class GameProgressManager : MonoBehaviour
         currentXP += xpForWin;
         currentXP = Mathf.Clamp(currentXP, 0, maxXP);
         UpdateLevel();
+
+        if (currentDistrict == "Final")
+        {
+            currentLevel = 99;
+        }
+
         needsTraining = false;
         SaveProgress();
         UpdateUI();
@@ -115,7 +121,16 @@ public class GameProgressManager : MonoBehaviour
         currentXP += xpForLose;
         currentXP = Mathf.Clamp(currentXP, 0, maxXP);
         UpdateLevel();
-        needsTraining = true;
+
+        if (currentDistrict == "Final")
+        {
+            needsTraining = true;
+        }
+        else
+        {
+            needsTraining = true;
+        }
+
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();

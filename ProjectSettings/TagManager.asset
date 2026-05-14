@@ -10,6 +10,7 @@ TagManager:
   - XPBar
   - LevelText
   - talim
+  - talimtas
   layers:
   - Default
   - TransparentFX

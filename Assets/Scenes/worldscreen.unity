@@ -366,11 +366,11 @@ Transform:
   m_GameObject: {fileID: 207585168}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1611.2878, y: 0, z: 278.12268}
+  m_LocalPosition: {x: 26.814522, y: -43.45001, z: 64.45714}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 534194557}
+  m_Father: {fileID: 314379353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &207585170
 MonoBehaviour:
@@ -385,10 +385,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TalimSpawner
   cubePrefab: {fileID: 418442983}
-  spawnPosition: {x: 0, y: 2, z: 80}
-  cubeScale: 2
+  spawnPosition: {x: 0, y: 2, z: 201}
+  cubeScale: 5.08
   trainingSceneName: talimalani
   cubeColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!1 &314379352
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 314379353}
+  m_Layer: 0
+  m_Name: spawnerlar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &314379353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314379352}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1638.1024, y: 43.45001, z: 213.66554}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1392043162}
+  - {fileID: 207585169}
+  - {fileID: 1975998505}
+  m_Father: {fileID: 534194557}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &340513200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -670,12 +704,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 418442983}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -184.8, y: -29.6, z: -66.6}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -180.6, y: -3.6, z: 245.5}
   m_LocalScale: {x: 20.67, y: 11.96, z: 21.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 968739382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &534194556
 GameObject:
@@ -709,9 +743,7 @@ Transform:
   - {fileID: 1252218668}
   - {fileID: 1170428777}
   - {fileID: 1431576287}
-  - {fileID: 1392043162}
-  - {fileID: 207585169}
-  - {fileID: 1975998505}
+  - {fileID: 314379353}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &786220424
@@ -926,6 +958,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 890667612}
   m_CullTransparentMesh: 1
+--- !u!1 &968739381
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 968739382}
+  m_Layer: 0
+  m_Name: bloklar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &968739382
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968739381}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.84394, y: -16.55003, z: -10.5302}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1291608725}
+  - {fileID: 418442987}
+  - {fileID: 1024300407}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1024300403
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,12 +1097,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1024300403}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -33.4, y: -37.53437, z: 73.787}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -28.55606, y: -20.98434, z: 84.3172}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 968739382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1170428777 stripped
 Transform:
@@ -1155,12 +1221,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291608721}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 140.8, y: -38.2, z: 71}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 145.64394, y: -21.649971, z: 81.5302}
   m_LocalScale: {x: 2.38, y: 2.71, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 968739382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1309520879
 GameObject:
@@ -1309,7 +1375,7 @@ MonoBehaviour:
   - {x: 0, y: 2, z: 30}
   - {x: -30, y: 2, z: 0}
   - {x: 30, y: 2, z: 0}
-  cubeScale: 2
+  cubeScale: 3.2
   cubeNames:
   - "K\xF6pr\xFCba\u015F\u0131"
   - Akhisar
@@ -1364,8 +1430,8 @@ MonoBehaviour:
   labelFontSize: 40
   labelScale: 1.2
   labelColor: {r: 1, g: 1, b: 1, a: 1}
-  minX: -166
-  maxX: 140
+  minX: -220.9
+  maxX: 221.2
   minZ: -60
   maxZ: 220
   tooltipText: {fileID: 0}
@@ -1379,11 +1445,11 @@ Transform:
   m_GameObject: {fileID: 1392043160}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1611.2878, y: 0, z: 278.12268}
+  m_LocalPosition: {x: 26.814522, y: -43.45001, z: 64.45714}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 534194557}
+  m_Father: {fileID: 314379353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1431576283
 GameObject:
@@ -1451,7 +1517,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f8a32bf302cae4aae8633d3e6e41d7a2, type: 2}
+  - {fileID: 2100000, guid: 303cf947e6b6148c5a20b0fa7b53c6b9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1492,8 +1558,8 @@ Transform:
   m_GameObject: {fileID: 1431576283}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1587.9794, y: 0.000038146973, z: 937.77716}
-  m_LocalScale: {x: 1000, y: 1000, z: 1000}
+  m_LocalPosition: {x: -1444, y: 0.000038146973, z: 937.77716}
+  m_LocalScale: {x: 1901.7993, y: 1000, z: 1000}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 534194557}
@@ -2036,11 +2102,11 @@ Transform:
   m_GameObject: {fileID: 1975998504}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1611.2878, y: 0, z: 278.12268}
+  m_LocalPosition: {x: 26.814522, y: -43.45001, z: 64.45714}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 534194557}
+  m_Father: {fileID: 314379353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1975998506
 MonoBehaviour:
@@ -2055,9 +2121,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FinalSpawner
   cubePrefab: {fileID: 1024300403}
-  spawnPosition: {x: 3, y: 6, z: 80}
-  cubeScale: 5
-  trainingSceneName: final
+  spawnPosition: {x: 5, y: 6, z: 80}
+  cubeScale: 10
+  finalSceneName: final
   cubeColor: {r: 0.1254902, g: 0.19607843, b: 0.27450982, a: 1}
 --- !u!1 &2095149874
 GameObject:
@@ -2215,9 +2281,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 1590110920}
   - {fileID: 1833315617}
-  - {fileID: 1291608725}
   - {fileID: 1883506615}
   - {fileID: 1440143335}
   - {fileID: 534194557}
-  - {fileID: 418442987}
-  - {fileID: 1024300407}
+  - {fileID: 968739382}

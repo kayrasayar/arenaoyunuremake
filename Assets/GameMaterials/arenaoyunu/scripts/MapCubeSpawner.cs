@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 [System.Serializable]
 public struct DistrictBonus
@@ -35,8 +36,8 @@ public class MapCubeSpawner : MonoBehaviour
 
     [Header("Küp Ayarları")]
     public GameObject cubePrefab;
-    public int cubeCount = 8;
-    public Vector3[] cubePositions = new Vector3[8]
+    public int cubeCount = 7;
+    public Vector3[] cubePositions = new Vector3[7]
     {
         new Vector3(-40f, 2f, -40f),
         new Vector3(40f, 2f, -40f),
@@ -44,24 +45,22 @@ public class MapCubeSpawner : MonoBehaviour
         new Vector3(40f, 2f, 40f),
         new Vector3(0f, 2f, -30f),
         new Vector3(0f, 2f, 30f),
-        new Vector3(-30f, 2f, 0f),
-        new Vector3(30f, 2f, 0f)
+        new Vector3(-30f, 2f, 0f)
     };
     public float cubeScale = 2f;
-    public string[] cubeNames = { "Köprübaşı", "Akhisar", "Demirci", "Esenler", "Beylikdüzü", "Üsküdar", "Çıkrıkçı", "Turgutlu" };
-    public DistrictBonus[] districtBonuses = new DistrictBonus[8]
+    public string[] cubeNames = { "Köprübaşı", "Akhisar", "Demirci", "Esenler", "Beylikdüzü", "Atıfın Dünyası", "Selendi" };
+    public DistrictBonus[] districtBonuses = new DistrictBonus[7]
     {
         new DistrictBonus { name = "Köprübaşı", enemyHpBonus = 5, xpBonus = 20, speedPenalty = 5, playerHpBonus = 10 },
         new DistrictBonus { name = "Akhisar", enemyHpBonus = 10, xpBonus = 15, speedPenalty = 0, playerHpBonus = 5 },
         new DistrictBonus { name = "Demirci", enemyHpBonus = 0, xpBonus = 30, speedPenalty = 10, playerHpBonus = 0 },
         new DistrictBonus { name = "Esenler", enemyHpBonus = 15, xpBonus = 10, speedPenalty = 0, playerHpBonus = 15 },
         new DistrictBonus { name = "Beylikdüzü", enemyHpBonus = 8, xpBonus = 25, speedPenalty = 3, playerHpBonus = 8 },
-        new DistrictBonus { name = "Üsküdar", enemyHpBonus = 12, xpBonus = 18, speedPenalty = 7, playerHpBonus = 12 },
-        new DistrictBonus { name = "Çıkrıkçı", enemyHpBonus = 3, xpBonus = 35, speedPenalty = 12, playerHpBonus = 3 },
-        new DistrictBonus { name = "Turgutlu", enemyHpBonus = 20, xpBonus = 5, speedPenalty = 0, playerHpBonus = 20 }
+        new DistrictBonus { name = "Atıfın Dünyası", enemyHpBonus = 12, xpBonus = 18, speedPenalty = 4, playerHpBonus = 7 },
+        new DistrictBonus { name = "Selendi", enemyHpBonus = 7, xpBonus = 22, speedPenalty = 6, playerHpBonus = 9 }
     };
     public float labelHeight = 2.5f;
-    public float labelFontSize = 40f;
+    public float labelFontSize = 30f;
     public float labelScale = 1.2f;
     public Color labelColor = Color.white;
 
@@ -74,6 +73,13 @@ public class MapCubeSpawner : MonoBehaviour
     private Canvas tooltipCanvas;
     public Text tooltipText;
     public GameObject tooltipObj;
+
+    private GameObject cubeContainer;
+
+    void OnValidate()
+    {
+        ValidateMapData();
+    }
 
     void Awake()
     {
@@ -89,6 +95,11 @@ public class MapCubeSpawner : MonoBehaviour
 
     void Start()
     {
+        ValidateMapData();
+        // İmleci görünür yap
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         CreateTooltipUI();
         SpawnCubes();
     }
@@ -134,6 +145,13 @@ public class MapCubeSpawner : MonoBehaviour
 
     void SpawnCubes()
     {
+        if (cubeContainer != null)
+        {
+            Destroy(cubeContainer);
+        }
+
+        cubeContainer = new GameObject("MapCubeContainer");
+
         if (cubePrefab == null)
         {
             Debug.LogError("cubePrefab atanmamış! Inspector'dan küp prefab'ını ata.");
@@ -141,27 +159,60 @@ public class MapCubeSpawner : MonoBehaviour
         }
 
         var availableNames = new System.Collections.Generic.List<string>(cubeNames);
-        Debug.Log(cubePositions.Length);
-        Debug.Log(cubeCount);
-        int spawnCount = Mathf.Min(cubeCount, cubePositions.Length);
+        int maxValidCount = Mathf.Min(cubePositions.Length, cubeNames.Length, districtBonuses.Length);
+        int spawnCount = Mathf.Min(cubeCount, maxValidCount);
+
+        if (cubeCount > maxValidCount)
+        {
+            Debug.LogWarning($"cubeCount değeri ({cubeCount}) kullanılabilir dizilerin boyutundan büyük. spawnCount {spawnCount} ile sınırlandı.");
+        }
 
         Debug.Log("Spawn işlemi başlıyor: " + spawnCount + " küp oluşturulacak");
 
         for (int i = 0; i < spawnCount; i++)
         {
+            string label = GetNextCubeLabel(availableNames);
             Vector3 position = cubePositions[i];
-            GameObject cube = Instantiate(cubePrefab, position, Quaternion.identity);
-            cube.transform.localScale = Vector3.one * cubeScale;
-            cube.AddComponent<BoxCollider>(); // Hover için collider ekle
-            MapCube mapCube = cube.AddComponent<MapCube>();
+            if (label == "Selendi")
+            {
+                position = new Vector3(1000f, 2f, 1000f); // Selendi çok uzak bir yere taşındı
+            }
 
-            string label = GetNextCubeLabel(availableNames, i);
+            GameObject cube = Instantiate(cubePrefab, position, Quaternion.identity);
+            cube.transform.SetParent(cubeContainer.transform, false);
+            cube.transform.localScale = Vector3.one * cubeScale;
+            if (cube.GetComponent<BoxCollider>() == null)
+            {
+                cube.AddComponent<BoxCollider>(); // Hover için collider ekle
+            }
+            MapCube mapCube = cube.GetComponent<MapCube>();
+            if (mapCube == null)
+            {
+                mapCube = cube.AddComponent<MapCube>();
+            }
+
             cube.name = label;
             CreateCubeLabel(cube, label);
 
             // Bonus eşleştir
             DistrictBonus bonus = GetBonusForDistrict(label);
-            mapCube.Initialize(false, "arena", bonus);
+            bool isFinal = (i == spawnCount - 1); // Son küp final
+            mapCube.Initialize(false, "arena", bonus, isFinal);
+
+            // Selendi otomatik olarak tamamlandı
+            if (label == "Selendi")
+            {
+                Renderer renderer = cube.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material.color = Color.green;
+                }
+                mapCube.isCompleted = true;
+                if (GameProgressManager.Instance != null && !GameProgressManager.Instance.completedDistricts.Contains(label))
+                {
+                    GameProgressManager.Instance.completedDistricts.Add(label);
+                }
+            }
 
             // Kazanıldıysa yeşil yap
             if (GameProgressManager.Instance != null && GameProgressManager.Instance.completedDistricts.Contains(label))
@@ -174,16 +225,16 @@ public class MapCubeSpawner : MonoBehaviour
                 mapCube.isCompleted = true;
             }
 
-            Debug.Log("Küp oluşturuldu: " + label + " konumda: " + position);
+            Debug.Log("Küp oluşturuldu: " + label + " konumda: " + position + (isFinal ? " (Final)" : ""));
         }
     }
 
-    string GetNextCubeLabel(System.Collections.Generic.List<string> availableNames, int index)
+    string GetNextCubeLabel(System.Collections.Generic.List<string> availableNames)
     {
         if (availableNames.Count > 0)
         {
-            string label = availableNames[index % availableNames.Count];
-            availableNames.RemoveAt(index % availableNames.Count);
+            string label = availableNames[0];
+            availableNames.RemoveAt(0);
             return label;
         }
         return "Unknown";
@@ -201,8 +252,65 @@ public class MapCubeSpawner : MonoBehaviour
         return default;
     }
 
+    void ValidateMapData()
+    {
+        string[] defaultNames = { "Köprübaşı", "Akhisar", "Demirci", "Esenler", "Beylikdüzü", "Atıfın Dünyası", "Selendi" };
+        DistrictBonus[] defaultBonuses = new DistrictBonus[7]
+        {
+            new DistrictBonus { name = "Köprübaşı", enemyHpBonus = 5, xpBonus = 20, speedPenalty = 5, playerHpBonus = 10 },
+            new DistrictBonus { name = "Akhisar", enemyHpBonus = 10, xpBonus = 15, speedPenalty = 0, playerHpBonus = 5 },
+            new DistrictBonus { name = "Demirci", enemyHpBonus = 0, xpBonus = 30, speedPenalty = 10, playerHpBonus = 0 },
+            new DistrictBonus { name = "Esenler", enemyHpBonus = 15, xpBonus = 10, speedPenalty = 0, playerHpBonus = 15 },
+            new DistrictBonus { name = "Beylikdüzü", enemyHpBonus = 8, xpBonus = 25, speedPenalty = 3, playerHpBonus = 8 },
+            new DistrictBonus { name = "Atıfın Dünyası", enemyHpBonus = 12, xpBonus = 18, speedPenalty = 4, playerHpBonus = 7 },
+            new DistrictBonus { name = "Selendi", enemyHpBonus = 7, xpBonus = 22, speedPenalty = 6, playerHpBonus = 9 }
+        };
+        Vector3[] defaultPositions = new Vector3[7]
+        {
+            new Vector3(-40f, 2f, -40f),
+            new Vector3(40f, 2f, -40f),
+            new Vector3(-40f, 2f, 40f),
+            new Vector3(40f, 2f, 40f),
+            new Vector3(0f, 2f, -30f),
+            new Vector3(0f, 2f, 30f),
+            new Vector3(-30f, 2f, 0f)
+        };
+
+        if (cubeNames == null || cubeNames.Length != defaultNames.Length)
+        {
+            Debug.LogWarning("MapCubeSpawner: cubeNames dizisi beklenen 7 elemanla eşleşmiyor; varsayılana geri döndü.");
+            cubeNames = defaultNames;
+        }
+
+        if (districtBonuses == null || districtBonuses.Length != defaultBonuses.Length)
+        {
+            Debug.LogWarning("MapCubeSpawner: districtBonuses dizisi beklenen 7 elemanla eşleşmiyor; varsayılana geri döndü.");
+            districtBonuses = defaultBonuses;
+        }
+
+        if (cubePositions == null || cubePositions.Length != defaultPositions.Length)
+        {
+            Debug.LogWarning("MapCubeSpawner: cubePositions dizisi beklenen 7 elemanla eşleşmiyor; varsayılana geri döndü.");
+            cubePositions = defaultPositions;
+        }
+
+        int maxValid = Mathf.Min(cubeNames.Length, districtBonuses.Length, cubePositions.Length);
+        if (cubeCount > maxValid)
+        {
+            Debug.LogWarning($"MapCubeSpawner: cubeCount ({cubeCount}) fazla, {maxValid} ile sınırlandı.");
+        }
+
+        cubeCount = Mathf.Clamp(cubeCount, 0, maxValid);
+    }
+
     void CreateCubeLabel(GameObject cube, string label)
     {
+        Transform existingLabel = cube.transform.Find("CubeLabel");
+        if (existingLabel != null)
+        {
+            Destroy(existingLabel.gameObject);
+        }
+
         GameObject textObj = new GameObject("CubeLabel");
         textObj.transform.SetParent(cube.transform, false);
         textObj.transform.localPosition = new Vector3(0f, labelHeight, 0f);
@@ -241,6 +349,7 @@ public class MapCube : MonoBehaviour
     private string warningMessage = "Önce talim alanına gitmelisin!";
     private DistrictBonus bonus;
     public bool isCompleted = false;
+    private AudioSource audioSource;
 
     public void Initialize(bool trainingCube, string destinationScene = "arena", DistrictBonus districtBonus = default, bool finalCube = false)
     {
@@ -252,6 +361,13 @@ public class MapCube : MonoBehaviour
         {
             warningMessage = "Önce tüm ilçeleri bitirmelisin!";
         }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
     }
 
     private void OnMouseEnter()
@@ -340,9 +456,31 @@ public class MapCube : MonoBehaviour
         }
         else if (GameProgressManager.Instance != null)
         {
-            GameProgressManager.Instance.currentDistrict = bonus.name;
+            GameProgressManager.Instance.currentDistrict = isFinalCube ? "Final" : bonus.name;
         }
 
+        if (isFinalCube)
+        {
+            AudioClip finalClip = Resources.Load<AudioClip>("finalgiris");
+            if (finalClip != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(finalClip);
+                StartCoroutine(LoadSceneAfterSound(finalClip.length));
+            }
+            else
+            {
+                SceneManager.LoadScene(sceneName);
+            }
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+    }
+
+    IEnumerator LoadSceneAfterSound(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         SceneManager.LoadScene(sceneName);
     }
 }

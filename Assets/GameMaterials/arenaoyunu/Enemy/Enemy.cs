@@ -9,6 +9,8 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
     private PlayerController hedefPlayer;
+    private AudioSource audioSource;
+    public AudioClip trainingHitClip;
     public bool Die = false;
     private bool isDead = false;
     public float olmeBekleme = 4f;
@@ -69,6 +71,18 @@ public class Enemy : MonoBehaviour
         }
 
         mevcutCan = maxCan;
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
+
+        if (trainingHitClip == null)
+        {
+            trainingHitClip = Resources.Load<AudioClip>("talimtas");
+        }
 
         // efekt objesi bul
         foreach (Transform child in transform)
@@ -172,6 +186,19 @@ public class Enemy : MonoBehaviour
         mevcutCan -= miktar;
         Debug.Log("Enemy hasar aldı: " + miktar);
 
+        // Play ouch sound
+        AudioClip ouchClip = Resources.Load<AudioClip>("ouch");
+        if (ouchClip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(ouchClip);
+        }
+
+        // Extra sound for talim
+        if (CompareTag("talim") && trainingHitClip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(trainingHitClip);
+        }
+
         UpdateCanBarı();
 
         if (efektObjesi != null)
@@ -188,6 +215,12 @@ public class Enemy : MonoBehaviour
             {
                 animator.SetBool("Die", true);
             }
+
+            if (CompareTag("talim") && audioSource != null && trainingHitClip != null)
+            {
+                audioSource.PlayOneShot(trainingHitClip);
+            }
+
             StartCoroutine(OlCoroutine());
         }
     }

@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
 {
     private CharacterController controller;
     private Animator animator;
+    private AudioSource audioSource;
+    private AudioSource footstepSource;
+    private float footstepTimer = 0f;
 
     private Vector2 moveInput;
     private Vector2 lookInput;
@@ -23,7 +26,12 @@ public class PlayerController : MonoBehaviour
     public int maxCan = 100;
     public int mevcutCan; // ✅ EKLENDİ
     public Image canBarıGorseli; // ✅ EKLENDİ
-    
+
+    [Header("Sesler")]
+    public AudioClip ouchClip;
+    public AudioClip dieClip;
+    public AudioClip footstepClip;
+
     [Header("Hasar Ayarları")]
     public int baseHasar = 10; // ✅ EKLENDİ
     public Transform attackPoint;
@@ -51,6 +59,33 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+
+        footstepSource = gameObject.AddComponent<AudioSource>();
+        footstepSource.playOnAwake = false;
+        footstepSource.loop = true;
+
+        if (ouchClip == null)
+        {
+            ouchClip = Resources.Load<AudioClip>("ouch");
+        }
+
+        if (dieClip == null)
+        {
+            dieClip = Resources.Load<AudioClip>("die");
+        }
+
+        if (footstepClip == null)
+        {
+            footstepClip = Resources.Load<AudioClip>("footstep");
+        }
 
         mevcutCan = maxCan; // ✅ EKLENDİ
         CanBarıGuncelle(); // ✅ EKLENDİ
@@ -94,6 +129,11 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("Player hasar aldı: " + hasarMiktari);
 
+        if (audioSource != null && ouchClip != null)
+        {
+            audioSource.PlayOneShot(ouchClip);
+        }
+
         CanBarıGuncelle();
 
         if (mevcutCan <= 0)
@@ -104,6 +144,12 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("Die", true);
             }
+
+            if (audioSource != null && dieClip != null)
+            {
+                audioSource.PlayOneShot(dieClip);
+            }
+
             // Kaybetme: 4 saniye ölüm animasyonu, sonra XP kaybı
             StartCoroutine(OyuncuOlmeCoroutine());
         }
@@ -235,6 +281,26 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Speed", finalSpeed, 0.1f, Time.deltaTime);
         animator.SetBool("Walk", finalSpeed > 0f);
         animator.SetBool("Run", kosuyorMu && rawSpeed > 0.1f);
+
+        // Footstep sound with 1 second delay
+        if (finalSpeed > 0f)
+        {
+            footstepTimer += Time.deltaTime;
+            if (footstepTimer >= 1f && footstepClip != null && footstepSource != null && !footstepSource.isPlaying)
+            {
+                footstepSource.clip = footstepClip;
+                footstepSource.Play();
+                footstepTimer = 0f;
+            }
+        }
+        else
+        {
+            footstepTimer = 0f;
+            if (footstepSource != null && footstepSource.isPlaying)
+            {
+                footstepSource.Stop();
+            }
+        }
     }
 
     // ✅ EKLENDİ: Seviyeye göre karakteri güçlendir
