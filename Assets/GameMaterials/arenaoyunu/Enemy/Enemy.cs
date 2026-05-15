@@ -257,7 +257,7 @@ public class Enemy : MonoBehaviour
                 GameProgressManager.Instance.CompleteTraining();
                 SceneManager.LoadScene("worldscreen");
             }
-            else
+            else if (!FinalBossFinale.TryStartFinale(transform))
             {
                 GameProgressManager.Instance.WinGame();
             }

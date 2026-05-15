@@ -342,9 +342,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 836112023}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8ae85757f5f616498109363e3d17229, type: 3}
+  m_Script: {fileID: 11500000, guid: c8f4e2a19b3d4f6e9a1c0d7e5b2a4f81, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RetryBut
+  m_EditorClassIdentifier: Assembly-CSharp::EndScreenManager
 --- !u!4 &836112025
 Transform:
   m_ObjectHideFlags: 0
@@ -443,8 +443,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 836112024}
-        m_TargetAssemblyTypeName: RetryBut, Assembly-CSharp
-        m_MethodName: clicked
+        m_TargetAssemblyTypeName: EndScreenManager, Assembly-CSharp
+        m_MethodName: YenidenBaslat
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

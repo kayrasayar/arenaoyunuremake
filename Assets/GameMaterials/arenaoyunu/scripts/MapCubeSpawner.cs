@@ -111,6 +111,12 @@ public class MapCubeSpawner : MonoBehaviour
             GameProgressManager.Instance.ValidateTrainingRequirement();
             GameProgressManager.Instance.SaveProgress();
         }
+
+        WorldMapQuestPanel.WorldscreendeOlustur();
+        if (WorldMapQuestPanel.Instance != null)
+        {
+            WorldMapQuestPanel.Instance.GuncelleGorevler();
+        }
     }
 
     void CreateTooltipUI()
@@ -150,6 +156,15 @@ public class MapCubeSpawner : MonoBehaviour
         tooltipText.rectTransform.anchoredPosition = Vector2.zero;
 
         tooltipObj.SetActive(false);
+    }
+
+    public void HaritayiYenile()
+    {
+        SpawnCubes();
+        if (WorldMapQuestPanel.Instance != null)
+        {
+            WorldMapQuestPanel.Instance.GuncelleGorevler();
+        }
     }
 
     void SpawnCubes()
@@ -362,10 +377,17 @@ public class MapCube : MonoBehaviour
             }
             else if (isFinalCube)
             {
-                tooltipTextContent = "Final Alanı - Son Mücadele";
-                if (GameProgressManager.Instance != null && !GameProgressManager.Instance.AreAllDistrictsCompleted())
+                if (GameProgressManager.Instance != null && GameProgressManager.Instance.needsTraining)
                 {
-                    tooltipTextContent += "\nÖnce tüm bölgeleri yenmelisin!";
+                    tooltipTextContent = "Önce talim alanına gitmelisin!";
+                }
+                else
+                {
+                    tooltipTextContent = "Final Alanı - Son Mücadele";
+                    if (GameProgressManager.Instance != null && !GameProgressManager.Instance.AreAllDistrictsCompleted())
+                    {
+                        tooltipTextContent += "\nÖnce tüm bölgeleri yenmelisin!";
+                    }
                 }
             }
             else if (GameProgressManager.Instance != null && GameProgressManager.Instance.needsTraining)
@@ -409,9 +431,9 @@ public class MapCube : MonoBehaviour
             }
         }
 
-        if (GameProgressManager.Instance != null && GameProgressManager.Instance.needsTraining && !isTrainingCube && !isFinalCube)
+        if (GameProgressManager.Instance != null && GameProgressManager.Instance.needsTraining && !isTrainingCube)
         {
-            Debug.LogWarning(warningMessage);
+            Debug.LogWarning(isFinalCube ? "Önce talim alanına gitmelisin!" : warningMessage);
             return;
         }
 
@@ -432,28 +454,6 @@ public class MapCube : MonoBehaviour
             }
         }
 
-        if (isFinalCube)
-        {
-            AudioClip finalClip = Resources.Load<AudioClip>("finalgiris");
-            if (finalClip != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(finalClip);
-                StartCoroutine(LoadSceneAfterSound(finalClip.length));
-            }
-            else
-            {
-                SceneManager.LoadScene(sceneName);
-            }
-        }
-        else
-        {
-            SceneManager.LoadScene(sceneName);
-        }
-    }
-
-    IEnumerator LoadSceneAfterSound(float delay)
-    {
-        yield return new WaitForSeconds(delay);
         SceneManager.LoadScene(sceneName);
     }
 }

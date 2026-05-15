@@ -41,7 +41,19 @@ public class PlayerController : MonoBehaviour
 
     [Header("Kamera Ayarları")]
     public Transform cameraPivot;
+    public Transform cameraRig;
     public float mouseHassasiyet = 2f;
+    [Tooltip("Karakter omzundaki dönme ekseni (yerel konum).")]
+    public Vector3 kameraOrbitPivotYerel = new Vector3(0f, 1.55f, 0f);
+    [Tooltip("Dikey bakış: eksen etrafında dönme hızı (derece).")]
+    public float dikeyBakisHassasiyeti = 0.18f;
+    [Tooltip("Aşağı bakış limiti (derece). 180° dönüş olmaz.")]
+    public float minPitchAcisi = -38f;
+    [Tooltip("Yukarı bakış limiti (derece).")]
+    public float maxPitchAcisi = 34f;
+    public float kameraCarpismaYaricapi = 0.25f;
+    public float kameraCarpismaMesafesi = 0.15f;
+    public LayerMask kameraEngelKatmanlari = ~0;
     public bool isAttack = false;
     public float attackCooldown = 0.5f; // ✅ COOLDOWN EKLENDİ
     private float lastAttackTime; // ✅ COOLDOWN İÇİN
@@ -54,6 +66,13 @@ public class PlayerController : MonoBehaviour
     public float defansSure = 1.5f;
     
     private int baseMaxCan = 100; // ✅ EKLENDİ
+
+    private Vector3 varsayilanKameraRigKonumu;
+    private Vector3 varsayilanOrbitKolu;
+    private float kameraPitchAcisi;
+    private float birinciSahisPitch;
+    private int oyuncuKatmani;
+    private float varsayilanYercekimi;
 
     void Start()
     {
@@ -98,6 +117,42 @@ public class PlayerController : MonoBehaviour
         {
             hitbox = GetComponentInChildren<Hitbox>();
         }
+
+        oyuncuKatmani = gameObject.layer;
+        varsayilanYercekimi = yercekimi;
+        KameraRiginiHazirla();
+    }
+
+    void KameraRiginiHazirla()
+    {
+        if (cameraPivot == null)
+        {
+            Camera mainCam = Camera.main;
+            if (mainCam != null)
+            {
+                cameraPivot = mainCam.transform;
+            }
+        }
+
+        if (cameraRig == null && cameraPivot != null)
+        {
+            cameraRig = cameraPivot.parent;
+        }
+
+        if (cameraRig == null)
+        {
+            return;
+        }
+
+        varsayilanKameraRigKonumu = cameraRig.localPosition;
+        varsayilanOrbitKolu = varsayilanKameraRigKonumu - kameraOrbitPivotYerel;
+        kameraPitchAcisi = 0f;
+
+        cameraRig.localRotation = Quaternion.identity;
+        if (cameraPivot != null)
+        {
+            cameraPivot.localRotation = Quaternion.identity;
+        }
     }
 
     // INPUT
@@ -118,6 +173,13 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead)
             return;
+
+        if (CheatManager.Instance != null && CheatManager.Instance.OlumsuzlukAktif)
+        {
+            mevcutCan = maxCan;
+            CanBarıGuncelle();
+            return;
+        }
 
         if (isDefending)
         {
@@ -201,7 +263,13 @@ public class PlayerController : MonoBehaviour
             Enemy enemy = hit.GetComponent<Enemy>() ?? hit.GetComponentInParent<Enemy>();
             if (enemy != null)
             {
-                enemy.HasarAl(baseHasar);
+                int hasar = baseHasar;
+                if (CheatManager.Instance != null)
+                {
+                    hasar = CheatManager.Instance.GetSaldiriHasari(hasar);
+                }
+
+                enemy.HasarAl(hasar);
             }
         }
     }
@@ -210,16 +278,30 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead) return;
 
-        kosuyorMu = Keyboard.current.leftShiftKey.isPressed;
+        if (CheatManager.Instance != null && CheatManager.Instance.PanelAcikMi)
+        {
+            return;
+        }
 
-        if (!isDefending && Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+        kosuyorMu = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
+
+        bool silahModu = CheatManager.Instance != null && CheatManager.Instance.SilahAktif;
+
+        if (!isDefending && !silahModu && Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             StartDefense();
         }
 
         if (!isDead && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            TriggerAttack();
+            if (silahModu)
+            {
+                CheatManager.Instance.SilahAtesEt(this);
+            }
+            else
+            {
+                TriggerAttack();
+            }
         }
 
         Hareket();
@@ -238,13 +320,77 @@ public class PlayerController : MonoBehaviour
 
     void KameraKontrol()
     {
-        float mouseX = lookInput.x * mouseHassasiyet;
+        if (CheatManager.Instance != null && CheatManager.Instance.BirinciSahisAktif)
+        {
+            BirinciSahisKamera();
+            return;
+        }
 
+        float mouseX = lookInput.x * mouseHassasiyet;
         transform.Rotate(Vector3.up * mouseX);
+
+        if (cameraRig == null)
+        {
+            return;
+        }
+
+        float mouseY = lookInput.y * dikeyBakisHassasiyeti;
+        kameraPitchAcisi = Mathf.Clamp(kameraPitchAcisi - mouseY, minPitchAcisi, maxPitchAcisi);
+        OrbitKamerayiUygula();
+    }
+
+    void BirinciSahisKamera()
+    {
+        float mouseX = lookInput.x * mouseHassasiyet;
+        float mouseY = lookInput.y * dikeyBakisHassasiyeti;
+        transform.Rotate(Vector3.up * mouseX);
+
+        if (cameraRig == null)
+        {
+            return;
+        }
+
+        birinciSahisPitch = Mathf.Clamp(birinciSahisPitch - mouseY, -85f, 85f);
+        cameraRig.localPosition = new Vector3(0f, 1.65f, 0.12f);
+        cameraRig.localRotation = Quaternion.identity;
 
         if (cameraPivot != null)
         {
-            cameraPivot.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            cameraPivot.localPosition = Vector3.zero;
+            cameraPivot.localRotation = Quaternion.Euler(birinciSahisPitch, 0f, 0f);
+        }
+    }
+
+    void OrbitKamerayiUygula()
+    {
+        Quaternion pitchRotasyonu = Quaternion.AngleAxis(kameraPitchAcisi, Vector3.right);
+        Vector3 donmusKol = pitchRotasyonu * varsayilanOrbitKolu;
+        cameraRig.localPosition = kameraOrbitPivotYerel + donmusKol;
+
+        Transform kameraTransformu = cameraPivot != null ? cameraPivot : cameraRig;
+        Vector3 orbitPivotDunya = transform.TransformPoint(kameraOrbitPivotYerel);
+        Vector3 kameraDunyaKonumu = kameraTransformu.position;
+
+        kameraTransformu.LookAt(orbitPivotDunya);
+
+        Vector3 yon = kameraDunyaKonumu - orbitPivotDunya;
+        float mesafe = yon.magnitude;
+        if (mesafe > 0.01f)
+        {
+            int engelMaskesi = kameraEngelKatmanlari.value & ~(1 << oyuncuKatmani);
+            if (Physics.SphereCast(
+                    orbitPivotDunya,
+                    kameraCarpismaYaricapi,
+                    yon.normalized,
+                    out RaycastHit carpisma,
+                    mesafe,
+                    engelMaskesi,
+                    QueryTriggerInteraction.Ignore))
+            {
+                Vector3 guvenliKonum = carpisma.point - yon.normalized * kameraCarpismaMesafesi;
+                cameraRig.position = guvenliKonum;
+                kameraTransformu.LookAt(orbitPivotDunya);
+            }
         }
     }
 
@@ -252,10 +398,25 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
 
-        if (controller.isGrounded && yVelocity < 0)
-            yVelocity = -2f;
+        float aktifYercekimi = yercekimi;
+        if (CheatManager.Instance != null)
+        {
+            aktifYercekimi = CheatManager.Instance.GetYercekimi(varsayilanYercekimi);
+        }
 
-        yVelocity += yercekimi * Time.deltaTime;
+        if (controller.isGrounded && yVelocity < 0)
+        {
+            yVelocity = -2f;
+        }
+
+        if (CheatManager.Instance != null && CheatManager.Instance.JetpackUcuyorMu())
+        {
+            yVelocity = CheatManager.Instance.GetJetpackGucu();
+        }
+        else
+        {
+            yVelocity += aktifYercekimi * Time.deltaTime;
+        }
 
         float aktifHiz = kosuyorMu ? hiz * kosmaCarpani : hiz;
 

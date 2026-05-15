@@ -60,10 +60,20 @@ public class GameProgressManager : MonoBehaviour
             SanitizeCompletedDistricts();
             ValidateTrainingRequirement();
             SaveProgress();
+            WorldMapQuestPanel.WorldscreendeOlustur();
+        }
+        else
+        {
+            WorldMapQuestPanel.TemizlePanel();
         }
 
         FindUIElements();
         UpdateUI();
+
+        if (scene.name == "worldscreen" && WorldMapQuestPanel.Instance != null)
+        {
+            WorldMapQuestPanel.Instance.GuncelleGorevler();
+        }
     }
 
     void Start()
@@ -118,13 +128,8 @@ public class GameProgressManager : MonoBehaviour
 
         if (currentDistrict == "Final")
         {
-            // Epic final win - level 99 yap
-            currentLevel = 99;
-            needsTraining = false;
-            SaveProgress();
-            UpdateUI();
-            UpdateEnemyStats();
-            SceneManager.LoadScene("winscreen");
+            MarkFinalVictory();
+            SceneManager.LoadScene("endscreen");
             return;
         }
 
@@ -132,6 +137,7 @@ public class GameProgressManager : MonoBehaviour
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();
+
         SceneManager.LoadScene("winscreen");
     }
 
@@ -162,6 +168,7 @@ public class GameProgressManager : MonoBehaviour
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();
+
     }
 
     public bool AreAllDistrictsCompleted()
@@ -303,6 +310,16 @@ public class GameProgressManager : MonoBehaviour
         ValidateTrainingRequirement();
     }
 
+    public void MarkFinalVictory()
+    {
+        currentLevel = 99;
+        needsTraining = false;
+        currentDistrict = "Final";
+        SaveProgress();
+        UpdateUI();
+        UpdateEnemyStats();
+    }
+
     public void ResetProgress()
     {
         currentXP = 0;
@@ -316,5 +333,21 @@ public class GameProgressManager : MonoBehaviour
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();
+    }
+
+    public void ResetAndRestartFromBeginning(string startScene = "video")
+    {
+        ResetProgress();
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+        Time.timeScale = 1f;
+
+        if (Instance == this)
+        {
+            Instance = null;
+            Destroy(gameObject);
+        }
+
+        SceneManager.LoadScene(startScene);
     }
 }
