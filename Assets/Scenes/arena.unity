@@ -200,7 +200,7 @@ MonoBehaviour:
   ouchClip: {fileID: 0}
   dieClip: {fileID: 0}
   footstepClip: {fileID: 0}
-  baseHasar: 10
+  baseHasar: 1000
   attackPoint: {fileID: 0}
   attackRadius: 4
   enemyLayers:

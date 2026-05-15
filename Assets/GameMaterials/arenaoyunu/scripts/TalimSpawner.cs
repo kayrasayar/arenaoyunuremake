@@ -46,28 +46,9 @@ public class TalimSpawner : MonoBehaviour
 
     void CreateCubeLabel(GameObject cube, string label)
     {
-        Transform existingLabel = cube.transform.Find("CubeLabel");
-        if (existingLabel != null)
-        {
-            TextMesh existingText = existingLabel.GetComponent<TextMesh>();
-            if (existingText != null)
-                existingText.text = label;
-            return;
-        }
-
-        GameObject textObj = new GameObject("CubeLabel");
-        textObj.transform.SetParent(cube.transform, false);
-        textObj.transform.localPosition = new Vector3(0f, cubeScale * 0.05f + 3f, 0f);
-        textObj.transform.localRotation = Quaternion.identity;
-
-        TextMesh textMesh = textObj.AddComponent<TextMesh>();
-        textMesh.text = label;
-        textMesh.fontSize = 20;
-        textMesh.color = Color.white;
-        textMesh.anchor = TextAnchor.MiddleCenter;
-        textMesh.alignment = TextAlignment.Center;
-
-        textObj.AddComponent<BillboardLabel>();
+        float labelHeight = cubeScale * 0.05f + 3f;
+        float labelLocalScale = 1.2f / Mathf.Max(cubeScale, 0.01f);
+        DistrictMapLabel.Create(cube.transform, label, labelHeight, 24f, Color.white, labelLocalScale);
     }
 
     void SetCubeColor(GameObject cube, Color color)

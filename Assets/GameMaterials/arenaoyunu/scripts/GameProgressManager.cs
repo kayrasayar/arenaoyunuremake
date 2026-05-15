@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -52,6 +55,13 @@ public class GameProgressManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (scene.name == "worldscreen")
+        {
+            SanitizeCompletedDistricts();
+            ValidateTrainingRequirement();
+            SaveProgress();
+        }
+
         FindUIElements();
         UpdateUI();
     }
@@ -96,7 +106,9 @@ public class GameProgressManager : MonoBehaviour
 
     public void WinGame()
     {
-        if (!string.IsNullOrEmpty(currentDistrict) && !completedDistricts.Contains(currentDistrict))
+        if (!string.IsNullOrEmpty(currentDistrict)
+            && currentDistrict != "Final"
+            && !completedDistricts.Contains(currentDistrict))
         {
             completedDistricts.Add(currentDistrict);
         }
@@ -106,7 +118,14 @@ public class GameProgressManager : MonoBehaviour
 
         if (currentDistrict == "Final")
         {
+            // Epic final win - level 99 yap
             currentLevel = 99;
+            needsTraining = false;
+            SaveProgress();
+            UpdateUI();
+            UpdateEnemyStats();
+            SceneManager.LoadScene("winscreen");
+            return;
         }
 
         needsTraining = false;
@@ -122,13 +141,12 @@ public class GameProgressManager : MonoBehaviour
         currentXP = Mathf.Clamp(currentXP, 0, maxXP);
         UpdateLevel();
 
+        needsTraining = true;
+        PlayerPrefs.SetInt("HasLostBattle", 1);
+
         if (currentDistrict == "Final")
         {
-            needsTraining = true;
-        }
-        else
-        {
-            needsTraining = true;
+            Debug.LogWarning("Final kaybı! Talim alanında kazanmadan devam edemezsin!");
         }
 
         SaveProgress();
@@ -140,9 +158,72 @@ public class GameProgressManager : MonoBehaviour
     public void CompleteTraining()
     {
         needsTraining = false;
+        PlayerPrefs.SetInt("NeedsTraining", 0);
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();
+    }
+
+    public bool AreAllDistrictsCompleted()
+    {
+        List<string> requiredDistricts = GetRequiredDistrictNames();
+        if (requiredDistricts.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (string district in requiredDistricts)
+        {
+            if (!completedDistricts.Contains(district))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public List<string> GetRequiredDistrictNames()
+    {
+        if (MapCubeSpawner.Instance != null)
+        {
+            return MapCubeSpawner.Instance.GetPlayableDistrictNames();
+        }
+
+        return new List<string>();
+    }
+
+    public void SanitizeCompletedDistricts()
+    {
+        completedDistricts = completedDistricts
+            .Where(d => !string.IsNullOrWhiteSpace(d))
+            .Select(d => d.Trim())
+            .Distinct()
+            .ToList();
+
+        completedDistricts.Remove("Final");
+        completedDistricts.Remove("Selendi");
+
+        List<string> validDistricts = GetRequiredDistrictNames();
+        if (validDistricts.Count > 0)
+        {
+            completedDistricts = completedDistricts
+                .Where(validDistricts.Contains)
+                .ToList();
+        }
+    }
+
+    public void ValidateTrainingRequirement()
+    {
+        bool hasLostBattle = PlayerPrefs.GetInt("HasLostBattle", 0) == 1;
+        if (!hasLostBattle)
+        {
+            needsTraining = false;
+            PlayerPrefs.SetInt("NeedsTraining", 0);
+            return;
+        }
+
+        needsTraining = PlayerPrefs.GetInt("NeedsTraining", 0) == 1;
     }
 
     void UpdateLevel()
@@ -169,7 +250,14 @@ public class GameProgressManager : MonoBehaviour
 
         if (levelText != null)
         {
-            levelText.text = "Seviye " + currentLevel + ": " + levelNames[currentLevel - 1];
+            if (currentLevel == 99)
+            {
+                levelText.text = "Seviye 99: ZAFER!";
+            }
+            else
+            {
+                levelText.text = "Seviye " + currentLevel + ": " + levelNames[currentLevel - 1];
+            }
         }
     }
 
@@ -182,11 +270,16 @@ public class GameProgressManager : MonoBehaviour
         enemySpeedMultiplier = 1.0f + levelMultiplier * 0.5f; // 1x - 1.5x hız
     }
 
-    void SaveProgress()
+    public void SaveProgress()
     {
         PlayerPrefs.SetInt("CurrentXP", currentXP);
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         PlayerPrefs.SetInt("NeedsTraining", needsTraining ? 1 : 0);
+
+        // Kazanılan ilçeleri kaydet
+        string districtsString = string.Join(",", completedDistricts);
+        PlayerPrefs.SetString("CompletedDistricts", districtsString);
+
         PlayerPrefs.Save();
     }
 
@@ -194,7 +287,20 @@ public class GameProgressManager : MonoBehaviour
     {
         currentXP = PlayerPrefs.GetInt("CurrentXP", 0);
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
-        needsTraining = PlayerPrefs.GetInt("NeedsTraining", 0) == 1;
+
+        completedDistricts.Clear();
+        string districtsString = PlayerPrefs.GetString("CompletedDistricts", "");
+        if (!string.IsNullOrEmpty(districtsString))
+        {
+            completedDistricts = districtsString
+                .Split(',')
+                .Select(d => d.Trim())
+                .Where(d => !string.IsNullOrEmpty(d))
+                .Distinct()
+                .ToList();
+        }
+
+        ValidateTrainingRequirement();
     }
 
     public void ResetProgress()
@@ -202,6 +308,11 @@ public class GameProgressManager : MonoBehaviour
         currentXP = 0;
         currentLevel = 1;
         needsTraining = false;
+        completedDistricts.Clear();
+        currentDistrict = null;
+        PlayerPrefs.SetInt("NeedsTraining", 0);
+        PlayerPrefs.SetInt("HasLostBattle", 0);
+        PlayerPrefs.DeleteKey("CompletedDistricts");
         SaveProgress();
         UpdateUI();
         UpdateEnemyStats();

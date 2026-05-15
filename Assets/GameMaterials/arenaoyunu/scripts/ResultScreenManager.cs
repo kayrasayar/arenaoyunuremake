@@ -30,6 +30,6 @@ public class ResultScreenManager : MonoBehaviour
 
     public void OnContinueButton()
     {
-        SceneManager.LoadScene("worldscene");
+        SceneManager.LoadScene("worldscreen");
     }
 }

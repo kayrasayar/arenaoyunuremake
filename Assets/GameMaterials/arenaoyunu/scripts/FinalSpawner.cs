@@ -42,19 +42,8 @@ public class FinalSpawner : MonoBehaviour
 
     void CreateCubeLabel(GameObject cube, string label)
     {
-        GameObject textObj = new GameObject("CubeLabel");
-        textObj.transform.SetParent(cube.transform, false);
-        textObj.transform.localPosition = new Vector3(0f, 2f, 0f); // Daha yüksek
-        textObj.transform.localRotation = Quaternion.identity;
-
-        TextMesh textMesh = textObj.AddComponent<TextMesh>();
-        textMesh.text = label;
-        textMesh.fontSize = 10; // Daha büyük
-        textMesh.color = Color.white;
-        textMesh.anchor = TextAnchor.MiddleCenter;
-        textMesh.alignment = TextAlignment.Center;
-
-        textObj.AddComponent<BillboardLabel>();
+        float labelLocalScale = 1.5f / Mathf.Max(cubeScale, 0.01f);
+        DistrictMapLabel.Create(cube.transform, label, 2f, 28f, Color.white, labelLocalScale);
     }
 
     void SetCubeColor(GameObject cube, Color color)

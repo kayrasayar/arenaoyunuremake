@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
 public struct DistrictBonus
@@ -102,6 +104,13 @@ public class MapCubeSpawner : MonoBehaviour
 
         CreateTooltipUI();
         SpawnCubes();
+
+        if (GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.SanitizeCompletedDistricts();
+            GameProgressManager.Instance.ValidateTrainingRequirement();
+            GameProgressManager.Instance.SaveProgress();
+        }
     }
 
     void CreateTooltipUI()
@@ -173,10 +182,6 @@ public class MapCubeSpawner : MonoBehaviour
         {
             string label = GetNextCubeLabel(availableNames);
             Vector3 position = cubePositions[i];
-            if (label == "Selendi")
-            {
-                position = new Vector3(1000f, 2f, 1000f); // Selendi çok uzak bir yere taşındı
-            }
 
             GameObject cube = Instantiate(cubePrefab, position, Quaternion.identity);
             cube.transform.SetParent(cubeContainer.transform, false);
@@ -196,23 +201,7 @@ public class MapCubeSpawner : MonoBehaviour
 
             // Bonus eşleştir
             DistrictBonus bonus = GetBonusForDistrict(label);
-            bool isFinal = (i == spawnCount - 1); // Son küp final
-            mapCube.Initialize(false, "arena", bonus, isFinal);
-
-            // Selendi otomatik olarak tamamlandı
-            if (label == "Selendi")
-            {
-                Renderer renderer = cube.GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    renderer.material.color = Color.green;
-                }
-                mapCube.isCompleted = true;
-                if (GameProgressManager.Instance != null && !GameProgressManager.Instance.completedDistricts.Contains(label))
-                {
-                    GameProgressManager.Instance.completedDistricts.Add(label);
-                }
-            }
+            mapCube.Initialize(false, "arena", bonus, false);
 
             // Kazanıldıysa yeşil yap
             if (GameProgressManager.Instance != null && GameProgressManager.Instance.completedDistricts.Contains(label))
@@ -225,7 +214,7 @@ public class MapCubeSpawner : MonoBehaviour
                 mapCube.isCompleted = true;
             }
 
-            Debug.Log("Küp oluşturuldu: " + label + " konumda: " + position + (isFinal ? " (Final)" : ""));
+            Debug.Log("Küp oluşturuldu: " + label + " konumda: " + position);
         }
     }
 
@@ -252,46 +241,44 @@ public class MapCubeSpawner : MonoBehaviour
         return default;
     }
 
+    public List<string> GetPlayableDistrictNames()
+    {
+        if (cubeNames == null || cubeNames.Length == 0)
+        {
+            return new List<string>();
+        }
+
+        int maxValidCount = Mathf.Min(cubePositions.Length, cubeNames.Length, districtBonuses.Length);
+        int playableCount = Mathf.Min(cubeCount, maxValidCount);
+
+        return cubeNames
+            .Take(playableCount)
+            .Where(name => !string.IsNullOrWhiteSpace(name) && name != "Selendi")
+            .Distinct()
+            .ToList();
+    }
+
     void ValidateMapData()
     {
-        string[] defaultNames = { "Köprübaşı", "Akhisar", "Demirci", "Esenler", "Beylikdüzü", "Atıfın Dünyası", "Selendi" };
-        DistrictBonus[] defaultBonuses = new DistrictBonus[7]
+        if (cubeNames == null || cubeNames.Length == 0)
         {
-            new DistrictBonus { name = "Köprübaşı", enemyHpBonus = 5, xpBonus = 20, speedPenalty = 5, playerHpBonus = 10 },
-            new DistrictBonus { name = "Akhisar", enemyHpBonus = 10, xpBonus = 15, speedPenalty = 0, playerHpBonus = 5 },
-            new DistrictBonus { name = "Demirci", enemyHpBonus = 0, xpBonus = 30, speedPenalty = 10, playerHpBonus = 0 },
-            new DistrictBonus { name = "Esenler", enemyHpBonus = 15, xpBonus = 10, speedPenalty = 0, playerHpBonus = 15 },
-            new DistrictBonus { name = "Beylikdüzü", enemyHpBonus = 8, xpBonus = 25, speedPenalty = 3, playerHpBonus = 8 },
-            new DistrictBonus { name = "Atıfın Dünyası", enemyHpBonus = 12, xpBonus = 18, speedPenalty = 4, playerHpBonus = 7 },
-            new DistrictBonus { name = "Selendi", enemyHpBonus = 7, xpBonus = 22, speedPenalty = 6, playerHpBonus = 9 }
-        };
-        Vector3[] defaultPositions = new Vector3[7]
-        {
-            new Vector3(-40f, 2f, -40f),
-            new Vector3(40f, 2f, -40f),
-            new Vector3(-40f, 2f, 40f),
-            new Vector3(40f, 2f, 40f),
-            new Vector3(0f, 2f, -30f),
-            new Vector3(0f, 2f, 30f),
-            new Vector3(-30f, 2f, 0f)
-        };
-
-        if (cubeNames == null || cubeNames.Length != defaultNames.Length)
-        {
-            Debug.LogWarning("MapCubeSpawner: cubeNames dizisi beklenen 7 elemanla eşleşmiyor; varsayılana geri döndü.");
-            cubeNames = defaultNames;
+            Debug.LogWarning("MapCubeSpawner: cubeNames boş.");
+            cubeCount = 0;
+            return;
         }
 
-        if (districtBonuses == null || districtBonuses.Length != defaultBonuses.Length)
+        if (cubePositions == null || cubePositions.Length == 0)
         {
-            Debug.LogWarning("MapCubeSpawner: districtBonuses dizisi beklenen 7 elemanla eşleşmiyor; varsayılana geri döndü.");
-            districtBonuses = defaultBonuses;
+            Debug.LogWarning("MapCubeSpawner: cubePositions boş.");
+            cubeCount = 0;
+            return;
         }
 
-        if (cubePositions == null || cubePositions.Length != defaultPositions.Length)
+        if (districtBonuses == null || districtBonuses.Length == 0)
         {
-            Debug.LogWarning("MapCubeSpawner: cubePositions dizisi beklenen 7 elemanla eşleşmiyor; varsayılana geri döndü.");
-            cubePositions = defaultPositions;
+            Debug.LogWarning("MapCubeSpawner: districtBonuses boş.");
+            cubeCount = 0;
+            return;
         }
 
         int maxValid = Mathf.Min(cubeNames.Length, districtBonuses.Length, cubePositions.Length);
@@ -305,25 +292,8 @@ public class MapCubeSpawner : MonoBehaviour
 
     void CreateCubeLabel(GameObject cube, string label)
     {
-        Transform existingLabel = cube.transform.Find("CubeLabel");
-        if (existingLabel != null)
-        {
-            Destroy(existingLabel.gameObject);
-        }
-
-        GameObject textObj = new GameObject("CubeLabel");
-        textObj.transform.SetParent(cube.transform, false);
-        textObj.transform.localPosition = new Vector3(0f, labelHeight, 0f);
-        textObj.transform.localRotation = Quaternion.identity;
-
-        TextMesh textMesh = textObj.AddComponent<TextMesh>();
-        textMesh.text = label;
-        textMesh.fontSize = (int)labelFontSize;
-        textMesh.color = labelColor;
-        textMesh.anchor = TextAnchor.MiddleCenter;
-        textMesh.alignment = TextAlignment.Center;
-
-        textObj.AddComponent<BillboardLabel>();
+        float labelLocalScale = labelScale / Mathf.Max(cubeScale, 0.01f);
+        DistrictMapLabel.Create(cube.transform, label, labelHeight, labelFontSize, labelColor, labelLocalScale);
     }
 
     void Update()
@@ -393,7 +363,7 @@ public class MapCube : MonoBehaviour
             else if (isFinalCube)
             {
                 tooltipTextContent = "Final Alanı - Son Mücadele";
-                if (GameProgressManager.Instance != null && GameProgressManager.Instance.completedDistricts.Count < MapCubeSpawner.Instance.cubeCount)
+                if (GameProgressManager.Instance != null && !GameProgressManager.Instance.AreAllDistrictsCompleted())
                 {
                     tooltipTextContent += "\nÖnce tüm bölgeleri yenmelisin!";
                 }
@@ -432,7 +402,7 @@ public class MapCube : MonoBehaviour
 
         if (isFinalCube)
         {
-            if (GameProgressManager.Instance == null || GameProgressManager.Instance.completedDistricts.Count < MapCubeSpawner.Instance.cubeCount)
+            if (GameProgressManager.Instance == null || !GameProgressManager.Instance.AreAllDistrictsCompleted())
             {
                 Debug.LogWarning(warningMessage);
                 return;
@@ -450,13 +420,16 @@ public class MapCube : MonoBehaviour
 
     void StartGame()
     {
-        if (isTrainingCube && GameProgressManager.Instance != null)
+        if (GameProgressManager.Instance != null)
         {
-            GameProgressManager.Instance.CompleteTraining();
-        }
-        else if (GameProgressManager.Instance != null)
-        {
-            GameProgressManager.Instance.currentDistrict = isFinalCube ? "Final" : bonus.name;
+            if (isTrainingCube)
+            {
+                GameProgressManager.Instance.currentDistrict = null;
+            }
+            else
+            {
+                GameProgressManager.Instance.currentDistrict = isFinalCube ? "Final" : bonus.name;
+            }
         }
 
         if (isFinalCube)
@@ -487,10 +460,26 @@ public class MapCube : MonoBehaviour
 
 public class BillboardLabel : MonoBehaviour
 {
+    static Camera cachedCamera;
+
     void LateUpdate()
     {
-        if (Camera.main == null) return;
-        transform.LookAt(Camera.main.transform);
-        transform.Rotate(0f, 180f, 0f);
+        Camera cam = cachedCamera;
+        if (cam == null || !cam.isActiveAndEnabled)
+        {
+            cam = Camera.main;
+            if (cam == null)
+            {
+                cam = Object.FindFirstObjectByType<Camera>();
+            }
+            cachedCamera = cam;
+        }
+
+        if (cam == null)
+        {
+            return;
+        }
+
+        transform.rotation = Quaternion.LookRotation(transform.position - cam.transform.position);
     }
 }
