@@ -12,8 +12,8 @@ public class WorldMapQuestPanel : MonoBehaviour
     private const string WorldMapSceneName = "worldscreen";
 
     [Header("Konum")]
-    public Vector2 panelBoyutu = new Vector2(340f, 210f);
-    public Vector2 sagUstOffset = new Vector2(-18f, -18f);
+    public Vector2 panelBoyutu = new Vector2(340f, 410f);
+    public Vector2 sagUstOffset = new Vector2(-30f, -18f);
 
     private TextMeshProUGUI baslikText;
     private TextMeshProUGUI gorevText;
@@ -232,7 +232,7 @@ public class WorldMapQuestPanel : MonoBehaviour
         gorevRt.offsetMax = Vector2.zero;
         gorevText = gorevObj.AddComponent<TextMeshProUGUI>();
         AtamaFont(gorevText);
-        gorevText.fontSize = 13f;
+        gorevText.fontSize = 17f;
         gorevText.alignment = TextAlignmentOptions.TopLeft;
         gorevText.color = new Color(0.95f, 0.95f, 0.95f);
         gorevText.richText = true;

@@ -6,7 +6,7 @@ public class TalimSpawner : MonoBehaviour
     public GameObject cubePrefab;
     public Vector3 spawnPosition = new Vector3(0f, 2f, 80f);
     public float cubeScale = 40f;
-    public string trainingSceneName = "training_arena";
+    public string trainingSceneName = "talimalani";
     public Color cubeColor = Color.white;
     public string cubeLabelText = "Talim Alanı";
 

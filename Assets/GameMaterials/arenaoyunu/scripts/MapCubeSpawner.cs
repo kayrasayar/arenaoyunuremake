@@ -72,6 +72,14 @@ public class MapCubeSpawner : MonoBehaviour
     public float minZ = -100f;
     public float maxZ = 100f;
 
+    [Header("İlçe Konum Çeşitliliği")]
+    public bool ilceKonumlariniKaristir = true;
+    [Tooltip("Varsayılan konumdan max sapma (küpler yakın kalsın).")]
+    public float konumSapmaMax = 7f;
+    public float kubelerArasiMinMesafe = 9f;
+    public float kubOlcekMin = 1.85f;
+    public float kubOlcekMax = 2.15f;
+
     private Canvas tooltipCanvas;
     public Text tooltipText;
     public GameObject tooltipObj;
@@ -193,14 +201,18 @@ public class MapCubeSpawner : MonoBehaviour
 
         Debug.Log("Spawn işlemi başlıyor: " + spawnCount + " küp oluşturulacak");
 
+        List<Vector3> kullanilanKonumlar = new List<Vector3>();
+
         for (int i = 0; i < spawnCount; i++)
         {
             string label = GetNextCubeLabel(availableNames);
-            Vector3 position = cubePositions[i];
+            Vector3 position = IlceHaritaKonumuAl(label, i, kullanilanKonumlar);
+            kullanilanKonumlar.Add(position);
+            float ilceOlcegi = IlceKupOlcegiAl(label);
 
             GameObject cube = Instantiate(cubePrefab, position, Quaternion.identity);
             cube.transform.SetParent(cubeContainer.transform, false);
-            cube.transform.localScale = Vector3.one * cubeScale;
+            cube.transform.localScale = Vector3.one * ilceOlcegi;
             if (cube.GetComponent<BoxCollider>() == null)
             {
                 cube.AddComponent<BoxCollider>(); // Hover için collider ekle
@@ -212,7 +224,7 @@ public class MapCubeSpawner : MonoBehaviour
             }
 
             cube.name = label;
-            CreateCubeLabel(cube, label);
+            CreateCubeLabel(cube, label, ilceOlcegi);
 
             // Bonus eşleştir
             DistrictBonus bonus = GetBonusForDistrict(label);
@@ -242,6 +254,85 @@ public class MapCubeSpawner : MonoBehaviour
             return label;
         }
         return "Unknown";
+    }
+
+    Vector3 IlceHaritaKonumuAl(string ilceAdi, int slotIndex, List<Vector3> kullanilan)
+    {
+        if (cubePositions == null || cubePositions.Length == 0)
+        {
+            return new Vector3(0f, 2f, 0f);
+        }
+
+        int index = Mathf.Clamp(slotIndex, 0, cubePositions.Length - 1);
+        Vector3 taban = cubePositions[index];
+
+        if (!ilceKonumlariniKaristir || string.IsNullOrEmpty(ilceAdi))
+        {
+            return taban;
+        }
+
+        Random.State eskiDurum = Random.state;
+        Random.InitState(ilceAdi.GetHashCode());
+
+        Vector3 aday = taban;
+        bool bulundu = false;
+
+        for (int d = 0; d < 24; d++)
+        {
+            aday = taban + new Vector3(
+                Random.Range(-konumSapmaMax, konumSapmaMax),
+                0f,
+                Random.Range(-konumSapmaMax, konumSapmaMax));
+            aday.y = taban.y;
+
+            if (KonumUygunMu(aday, kullanilan))
+            {
+                bulundu = true;
+                break;
+            }
+        }
+
+        Random.state = eskiDurum;
+
+        if (!bulundu)
+        {
+            float t = (Mathf.Abs(ilceAdi.GetHashCode()) % 1000) / 1000f;
+            float sapma = konumSapmaMax * 0.55f;
+            aday = taban + new Vector3(
+                Mathf.Lerp(-sapma, sapma, t),
+                0f,
+                Mathf.Lerp(-sapma, sapma, 1f - t));
+            aday.y = taban.y;
+        }
+
+        return aday;
+    }
+
+    bool KonumUygunMu(Vector3 aday, List<Vector3> kullanilan)
+    {
+        for (int j = 0; j < kullanilan.Count; j++)
+        {
+            Vector3 mevcut = kullanilan[j];
+            float dx = aday.x - mevcut.x;
+            float dz = aday.z - mevcut.z;
+            if (dx * dx + dz * dz < kubelerArasiMinMesafe * kubelerArasiMinMesafe)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    float IlceKupOlcegiAl(string ilceAdi)
+    {
+        if (string.IsNullOrEmpty(ilceAdi))
+        {
+            return cubeScale;
+        }
+
+        float t = (Mathf.Abs(ilceAdi.GetHashCode()) % 1000) / 1000f;
+        return Mathf.Lerp(kubOlcekMin, kubOlcekMax, t);
     }
 
     DistrictBonus GetBonusForDistrict(string districtName)
@@ -305,9 +396,9 @@ public class MapCubeSpawner : MonoBehaviour
         cubeCount = Mathf.Clamp(cubeCount, 0, maxValid);
     }
 
-    void CreateCubeLabel(GameObject cube, string label)
+    void CreateCubeLabel(GameObject cube, string label, float kupOlcegi)
     {
-        float labelLocalScale = labelScale / Mathf.Max(cubeScale, 0.01f);
+        float labelLocalScale = labelScale / Mathf.Max(kupOlcegi, 0.01f);
         DistrictMapLabel.Create(cube.transform, label, labelHeight, labelFontSize, labelColor, labelLocalScale);
     }
 

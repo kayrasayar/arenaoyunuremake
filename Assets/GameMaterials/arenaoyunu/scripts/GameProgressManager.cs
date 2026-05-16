@@ -74,6 +74,19 @@ public class GameProgressManager : MonoBehaviour
         {
             WorldMapQuestPanel.Instance.GuncelleGorevler();
         }
+
+        if (scene.name == "arena")
+        {
+            ArenaDistrictVariator.IlceArenasindaOlustur();
+        }
+        else if (scene.name == "talimalani" || scene.name == "final")
+        {
+            ArenaDistrictVariator kalinti = FindFirstObjectByType<ArenaDistrictVariator>();
+            if (kalinti != null)
+            {
+                Destroy(kalinti.gameObject);
+            }
+        }
     }
 
     void Start()
