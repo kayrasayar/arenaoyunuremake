@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -30,6 +31,8 @@ public class ArenaDistrictVariator : MonoBehaviour
     bool kayitli;
 
     int sonTohum;
+    readonly List<GameObject> kabusKlonlari = new List<GameObject>();
+    GameObject dusmanSablon;
 
     public static void IlceArenasindaOlustur()
     {
@@ -92,6 +95,97 @@ public class ArenaDistrictVariator : MonoBehaviour
         UygulaRenkAtmosferi();
         yield return null;
         AjanlariYerlestir();
+        KabusDusmanlariniOlustur();
+    }
+
+    public void KabusDusmanlariniYenile()
+    {
+        if (ArenaBattleManager.Instance != null)
+        {
+            ArenaBattleManager.Instance.Sifirla();
+        }
+
+        KabusKlonlariniTemizle();
+
+        if (dusman == null && !ReferanslariBul())
+        {
+            return;
+        }
+
+        if (dusmanSablon == null && dusman != null)
+        {
+            dusmanSablon = dusman.gameObject;
+        }
+
+        KabusDusmanlariniOlustur();
+    }
+
+    void KabusDusmanlariniOlustur()
+    {
+        if (!GameSettingsManager.IsNightmareMode() || dusman == null)
+        {
+            return;
+        }
+
+        dusmanSablon = dusman.gameObject;
+        ArenaBattleManager manager = ArenaBattleManager.EnsureForArena();
+        if (manager == null)
+        {
+            return;
+        }
+
+        Enemy anaDusman = dusman.GetComponent<Enemy>();
+        if (anaDusman != null)
+        {
+            manager.KayitEt(anaDusman);
+        }
+
+        int toplam = GameSettingsManager.GetNightmareEnemyCount(sonTohum);
+        int ekstra = Mathf.Max(0, toplam - 1);
+
+        for (int i = 0; i < ekstra; i++)
+        {
+            float aci = (360f / Mathf.Max(1, toplam)) * i * Mathf.Deg2Rad + T(0f, 0.4f);
+            float mesafe = T(9f, 14f);
+            Vector3 konum = arenaMerkezi + new Vector3(Mathf.Cos(aci), 0f, Mathf.Sin(aci)) * mesafe;
+            konum.y = dusmanBaslangic.y;
+
+            GameObject klon = Instantiate(dusmanSablon, konum, dusman.rotation);
+            klon.name = "enemy_" + (i + 2);
+            kabusKlonlari.Add(klon);
+
+            Vector3 bakis = oyuncu != null ? oyuncu.position - konum : dusman.forward;
+            bakis.y = 0f;
+            if (bakis.sqrMagnitude > 0.01f)
+            {
+                klon.transform.rotation = Quaternion.LookRotation(bakis.normalized);
+            }
+
+            Enemy enemy = klon.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                manager.KayitEt(enemy);
+            }
+
+            NavMeshAgent agent = klon.GetComponent<NavMeshAgent>();
+            if (agent != null && agent.enabled && NavMesh.SamplePosition(konum, out NavMeshHit hit, 4f, NavMesh.AllAreas))
+            {
+                agent.Warp(hit.position);
+            }
+        }
+    }
+
+    void KabusKlonlariniTemizle()
+    {
+        foreach (GameObject klon in kabusKlonlari)
+        {
+            if (klon != null)
+            {
+                Destroy(klon);
+            }
+        }
+
+        kabusKlonlari.Clear();
     }
 
     int IlceTohumuAl()

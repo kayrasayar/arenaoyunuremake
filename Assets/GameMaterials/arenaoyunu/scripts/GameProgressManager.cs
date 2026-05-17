@@ -19,7 +19,7 @@ public class GameProgressManager : MonoBehaviour
     [Header("Seviye Ayarları")]
     public int currentLevel = 1;
     public int maxLevel = 10;
-    public string[] levelNames = { "Çaylak", "Yeni", "Acemi", "Orta", "İyi", "Pro", "Uzman", "Kral", "Efsane", "Tanrı" };
+    public string[] levelNames = { "Yeni", "Çaylak", "Acemi", "Savaşçı", "Gladyatör", "Şampiyon", "Usta", "Elit", "Efsane", "Ölümsüz" };
 
     [Header("UI")]
     public Image xpBar;
@@ -281,13 +281,16 @@ public class GameProgressManager : MonoBehaviour
         }
     }
 
-    void UpdateEnemyStats()
+    public void UpdateEnemyStats()
     {
-        // XP'ye göre düşman güçlendirme
         float levelMultiplier = (float)currentLevel / maxLevel;
-        enemyHealthMultiplier = 1.0f + levelMultiplier * 2.0f; // 1x - 3x can
-        enemyDamageMultiplier = 1.0f + levelMultiplier * 1.5f; // 1x - 2.5x hasar
-        enemySpeedMultiplier = 1.0f + levelMultiplier * 0.5f; // 1x - 1.5x hız
+        float zorlukCan = GameSettingsManager.GetDifficultyHealthMultiplier();
+        float zorlukHasar = GameSettingsManager.GetDifficultyDamageMultiplier();
+        float zorlukHiz = GameSettingsManager.GetDifficultySpeedMultiplier();
+
+        enemyHealthMultiplier = (1.0f + levelMultiplier * 2.0f) * zorlukCan;
+        enemyDamageMultiplier = (1.0f + levelMultiplier * 1.5f) * zorlukHasar;
+        enemySpeedMultiplier = (1.0f + levelMultiplier * 0.5f) * zorlukHiz;
     }
 
     public void SaveProgress()

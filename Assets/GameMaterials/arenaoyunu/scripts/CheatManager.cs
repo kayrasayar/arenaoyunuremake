@@ -65,7 +65,7 @@ public class CheatManager : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void OtomatikOlustur()
     {
-        if (FindFirstObjectByType<CheatManager>() != null)
+        if (FindAnyObjectByType<CheatManager>() != null)
         {
             return;
         }
@@ -111,6 +111,15 @@ public class CheatManager : MonoBehaviour
 
     void SahneYuklendi(Scene scene, LoadSceneMode mode)
     {
+        if (panelRoot == null)
+        {
+            OlusturPanel();
+            if (panelRoot != null)
+            {
+                panelRoot.SetActive(false);
+            }
+        }
+
         if (scene.name == "final")
         {
             FinalSahneSesiniHazirla();
@@ -124,7 +133,7 @@ public class CheatManager : MonoBehaviour
 
     void FinalSahneSesiniHazirla()
     {
-        if (FindFirstObjectByType<FinalSceneEntryAudio>() != null)
+        if (FindAnyObjectByType<FinalSceneEntryAudio>() != null)
         {
             return;
         }
@@ -137,6 +146,11 @@ public class CheatManager : MonoBehaviour
     {
         if (PanelTusuBasildi())
         {
+            if (GameSettingsManager.Instance != null && GameSettingsManager.Instance.PanelAcikMi)
+            {
+                return;
+            }
+
             PanelAcKapa();
         }
 
@@ -203,7 +217,7 @@ public class CheatManager : MonoBehaviour
                 || Keyboard.current.numpadEnterKey.wasPressedThisFrame);
     }
 
-    void PanelAcKapa()
+    public void PanelAcKapa()
     {
         if (panelRoot == null)
         {
@@ -221,6 +235,11 @@ public class CheatManager : MonoBehaviour
 
         if (panelAcik)
         {
+            if (GameSettingsManager.Instance != null && GameSettingsManager.Instance.PanelAcikMi)
+            {
+                GameSettingsManager.Instance.PanelAcKapa();
+            }
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             if (kodInput != null)
@@ -324,7 +343,7 @@ public class CheatManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "worldscreen")
         {
-            MapCubeSpawner spawner = FindFirstObjectByType<MapCubeSpawner>();
+            MapCubeSpawner spawner = FindAnyObjectByType<MapCubeSpawner>();
             if (spawner != null)
             {
                 spawner.HaritayiYenile();
@@ -338,8 +357,8 @@ public class CheatManager : MonoBehaviour
     {
         return new List<string>
         {
-            "Köprübaşı", "Akhisar", "Demirci", "Esenler",
-            "Beylikdüzü", "Üsküdar", "Çırıkçı", "Turgutlu"
+            "Köprübaşı", "Akhisar", "Demirci", "Kula",
+            "Selendi", "Ahmetli", "Çırıkçı", "Turgutlu"
         };
     }
 
@@ -380,7 +399,7 @@ public class CheatManager : MonoBehaviour
 
     void SilahGorseliniAyarla()
     {
-        PlayerController player = FindFirstObjectByType<PlayerController>();
+        PlayerController player = FindAnyObjectByType<PlayerController>();
         if (player == null)
         {
             return;
@@ -491,18 +510,25 @@ public class CheatManager : MonoBehaviour
 
     void OlusturPanel()
     {
-        if (FindFirstObjectByType<EventSystem>() == null)
+        EventSystem eventSystem = FindAnyObjectByType<EventSystem>();
+        if (eventSystem == null)
         {
             GameObject eventSystemObj = new GameObject("CheatEventSystem");
-            eventSystemObj.AddComponent<EventSystem>();
+            eventSystem = eventSystemObj.AddComponent<EventSystem>();
             eventSystemObj.AddComponent<InputSystemUIInputModule>();
+            DontDestroyOnLoad(eventSystemObj);
+        }
+        else if (eventSystem.GetComponent<InputSystemUIInputModule>() == null)
+        {
+            eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
         }
 
         GameObject canvasObj = new GameObject("CheatCanvas");
-        canvasObj.transform.SetParent(transform);
+        canvasObj.transform.SetParent(transform, false);
+        DontDestroyOnLoad(canvasObj);
         Canvas canvas = canvasObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 900;
+        canvas.sortingOrder = 2000;
         CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920f, 1080f);

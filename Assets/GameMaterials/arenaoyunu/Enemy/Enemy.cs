@@ -62,13 +62,17 @@ public class Enemy : MonoBehaviour
         mevcutCan = maxCan;
         UpdateCanBarı();
 
-        // İlerleme sistemine göre düşman güçlendirme
         if (GameProgressManager.Instance != null)
         {
             maxCan = Mathf.RoundToInt(maxCan * GameProgressManager.Instance.enemyHealthMultiplier);
             hasar = Mathf.RoundToInt(hasar * GameProgressManager.Instance.enemyDamageMultiplier);
-            agent.speed *= GameProgressManager.Instance.enemySpeedMultiplier;
+            if (agent != null)
+            {
+                agent.speed *= GameProgressManager.Instance.enemySpeedMultiplier;
+            }
         }
+
+        saldiriCooldown *= GameSettingsManager.GetEnemyAttackCooldownMultiplier();
 
         mevcutCan = maxCan;
 
@@ -190,7 +194,10 @@ public class Enemy : MonoBehaviour
         AudioClip ouchClip = Resources.Load<AudioClip>("ouch");
         if (ouchClip != null && audioSource != null)
         {
-            audioSource.PlayOneShot(ouchClip);
+            float ses = GameSettingsManager.Instance != null
+                ? GameSettingsManager.Instance.GetEffectiveSfxVolume()
+                : 1f;
+            audioSource.PlayOneShot(ouchClip, ses);
         }
 
         // Extra sound for talim
@@ -256,6 +263,12 @@ public class Enemy : MonoBehaviour
                 Debug.Log("Talim taşı yenildi, normal oyun akışı açıldı.");
                 GameProgressManager.Instance.CompleteTraining();
                 SceneManager.LoadScene("worldscreen");
+            }
+            else if (SceneManager.GetActiveScene().name == "arena"
+                && ArenaBattleManager.Instance != null
+                && ArenaBattleManager.Instance.TryHandleEnemyDeath(this))
+            {
+                Destroy(gameObject);
             }
             else if (!FinalBossFinale.TryStartFinale(transform))
             {

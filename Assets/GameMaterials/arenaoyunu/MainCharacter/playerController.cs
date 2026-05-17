@@ -64,8 +64,10 @@ public class PlayerController : MonoBehaviour
     public bool isDead = false;
     public bool isDefending = false;
     public float defansSure = 1.5f;
-    
-    private int baseMaxCan = 100; // ✅ EKLENDİ
+
+    private int baseMaxCan = 100;
+    private float sonrakiDefansZamani;
+    private float varsayilanDefansSure;
 
     private Vector3 varsayilanKameraRigKonumu;
     private Vector3 varsayilanOrbitKolu;
@@ -120,7 +122,14 @@ public class PlayerController : MonoBehaviour
 
         oyuncuKatmani = gameObject.layer;
         varsayilanYercekimi = yercekimi;
+        varsayilanDefansSure = defansSure;
+        GuncelleDefansAyarlarini();
         KameraRiginiHazirla();
+    }
+
+    void GuncelleDefansAyarlarini()
+    {
+        defansSure = GameSettingsManager.GetDefenseDuration();
     }
 
     void KameraRiginiHazirla()
@@ -219,15 +228,17 @@ public class PlayerController : MonoBehaviour
 
     public void OnDefense(InputValue value)
     {
-        if (value.isPressed && !isDefending && !isDead)
+        if (value.isPressed)
         {
-            isDefending = true;
-            animator?.SetTrigger("Def");
-            Invoke(nameof(DefansKapat), defansSure);
+            StartDefense();
         }
     }
 
-    void DefansKapat() => isDefending = false;
+    void DefansKapat()
+    {
+        isDefending = false;
+        sonrakiDefansZamani = Time.time + GameSettingsManager.GetDefenseReuseCooldown();
+    }
 
     // ✅ CAN BAR GÜNCELLEME
     void CanBarıGuncelle()
@@ -278,7 +289,8 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead) return;
 
-        if (CheatManager.Instance != null && CheatManager.Instance.PanelAcikMi)
+        if ((CheatManager.Instance != null && CheatManager.Instance.PanelAcikMi)
+            || (GameSettingsManager.Instance != null && GameSettingsManager.Instance.PanelAcikMi))
         {
             return;
         }
@@ -311,10 +323,15 @@ public class PlayerController : MonoBehaviour
 
     void StartDefense()
     {
-        if (isDefending || isDead) return;
+        if (isDefending || isDead || Time.time < sonrakiDefansZamani)
+        {
+            return;
+        }
 
+        GuncelleDefansAyarlarini();
         isDefending = true;
         animator?.SetTrigger("Def");
+        CancelInvoke(nameof(DefansKapat));
         Invoke(nameof(DefansKapat), defansSure);
     }
 

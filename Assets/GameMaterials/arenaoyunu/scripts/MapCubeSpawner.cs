@@ -50,15 +50,15 @@ public class MapCubeSpawner : MonoBehaviour
         new Vector3(-30f, 2f, 0f)
     };
     public float cubeScale = 2f;
-    public string[] cubeNames = { "Köprübaşı", "Akhisar", "Demirci", "Esenler", "Beylikdüzü", "Atıfın Dünyası", "Selendi" };
+    public string[] cubeNames = { "Köprübaşı", "Akhisar", "Kasaba", "Esenler", "Ahmetli", "Kula", "Selendi" };
     public DistrictBonus[] districtBonuses = new DistrictBonus[7]
     {
         new DistrictBonus { name = "Köprübaşı", enemyHpBonus = 5, xpBonus = 20, speedPenalty = 5, playerHpBonus = 10 },
         new DistrictBonus { name = "Akhisar", enemyHpBonus = 10, xpBonus = 15, speedPenalty = 0, playerHpBonus = 5 },
-        new DistrictBonus { name = "Demirci", enemyHpBonus = 0, xpBonus = 30, speedPenalty = 10, playerHpBonus = 0 },
+        new DistrictBonus { name = "Kasaba", enemyHpBonus = 0, xpBonus = 30, speedPenalty = 10, playerHpBonus = 0 },
         new DistrictBonus { name = "Esenler", enemyHpBonus = 15, xpBonus = 10, speedPenalty = 0, playerHpBonus = 15 },
-        new DistrictBonus { name = "Beylikdüzü", enemyHpBonus = 8, xpBonus = 25, speedPenalty = 3, playerHpBonus = 8 },
-        new DistrictBonus { name = "Atıfın Dünyası", enemyHpBonus = 12, xpBonus = 18, speedPenalty = 4, playerHpBonus = 7 },
+        new DistrictBonus { name = "Ahmetli", enemyHpBonus = 8, xpBonus = 25, speedPenalty = 3, playerHpBonus = 8 },
+        new DistrictBonus { name = "Kula", enemyHpBonus = 12, xpBonus = 18, speedPenalty = 4, playerHpBonus = 7 },
         new DistrictBonus { name = "Selendi", enemyHpBonus = 7, xpBonus = 22, speedPenalty = 6, playerHpBonus = 9 }
     };
     public float labelHeight = 2.5f;
@@ -489,8 +489,8 @@ public class MapCube : MonoBehaviour
             {
                 tooltipTextContent = $"{bonus.name}\n";
                 if (!string.IsNullOrEmpty(positives)) tooltipTextContent += $"<color=#00FF00>{positives}</color>\n";
-                if (!string.IsNullOrEmpty(negatives)) tooltipTextContent += $"<color=#FF0000>{negatives}</color>\n";
-                if (bonus.xpBonus > 0) tooltipTextContent += $"<color=#000080>+{bonus.xpBonus} XP</color>";
+                if (!string.IsNullOrEmpty(negatives)) tooltipTextContent += $"<color=#FF3000>{negatives}</color>\n";
+                if (bonus.xpBonus > 0) tooltipTextContent += $"<color=#000880>+{bonus.xpBonus} XP</color>";
             }
 
             MapCubeSpawner.Instance.tooltipText.text = tooltipTextContent;

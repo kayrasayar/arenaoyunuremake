@@ -128,8 +128,8 @@ public class WorldMapQuestPanel : MonoBehaviour
         {
             tumIlceler = new List<string>
             {
-                "Köprübaşı", "Akhisar", "Demirci", "Esenler",
-                "Beylikdüzü", "Üsküdar", "Çırıkçı", "Turgutlu"
+                "Köprübaşı", "Akhisar", "Demirci", "Kula",
+                "Kasaba", "Selendi", "Çırıkçı", "Turgutlu"
             };
         }
 
